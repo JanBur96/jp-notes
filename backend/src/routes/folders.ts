@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
   const folder = await prisma.folder.create({
     data,
   });
-  res.json(folder);
+  res.status(201).json(folder);
 });
 
 router.put("/:id", async (req, res) => {

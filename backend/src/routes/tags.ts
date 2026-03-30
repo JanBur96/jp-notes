@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
     const tag = await prisma.tag.create({
       data: { name },
     });
-    res.json(tag);
+    res.status(201).json(tag);
   } catch (error) {
     res.status(400).json({ error: "Failed to create tag" });
   }
@@ -56,7 +56,7 @@ router.delete("/:id", async (req, res) => {
     await prisma.tag.delete({
       where: { id: req.params.id },
     });
-    res.json({ message: "Tag deleted" });
+    res.status(204).end();
   } catch (error) {
     res.status(400).json({ error: "Failed to delete tag" });
   }
