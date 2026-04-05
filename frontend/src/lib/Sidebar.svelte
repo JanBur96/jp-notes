@@ -1,28 +1,19 @@
 <script lang="ts">
-  import { api } from './api';
-  import { onMount } from 'svelte';
   import { type Folder } from './api'; // Phase 2: import Tag
   import FolderTree from './FolderTree.svelte';
   import { store } from './store.svelte';
 
-  let folders = $state<Folder[]>([]);
   // Phase 2: let tags = $state<Tag[]>([]);
-
-  onMount(async () => {
-    folders = await api.folders.list();
-    // Phase 2: tags = await api.tags.list();
-
-    console.log('Fetched folders:', folders);
-    // Phase 2: console.log('Fetched tags:', tags);
-  });
 
   function selectFolder(id: string) {
     store.activeFolderId = id;
+    store.mobilePane = 'list';
     console.log('Selected folder ID:', id);
   }
 
   function selectAllNotes() {
     store.activeFolderId = null;
+    store.mobilePane = 'list';
   }
 </script>
 
@@ -42,7 +33,7 @@
     <li>
       <ul>
         <FolderTree
-          {folders}
+          folders={store.folders}
           parentId={null}
           activeFolderId={store.activeFolderId}
           onSelect={selectFolder}

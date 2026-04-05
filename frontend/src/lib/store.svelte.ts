@@ -8,6 +8,7 @@ export const store = $state({
   activeNoteId: null as string | null,
   activeFolderId: null as string | null,
   searchQuery: '',
+  mobilePane: 'sidebar' as 'sidebar' | 'list' | 'editor',
 });
 
 export async function loadNotes(folderId?: string | null) {
@@ -53,4 +54,14 @@ export async function createNote(folderId?: string) {
   // Use the server-assigned note (with its real ID)
   store.notes.push({ ...created, folder: folderToAssign || null });
   store.activeNoteId = created.id;
+  store.mobilePane = 'editor';
+}
+
+export async function createFolder(name: string, parentId?: string | null) {
+  const newFolder = await api.folders.create({
+    name,
+    parentId: parentId || undefined,
+  });
+  store.folders.push(newFolder);
+  store.activeFolderId = newFolder.id;
 }

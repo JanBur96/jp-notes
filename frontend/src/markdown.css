@@ -5,8 +5,7 @@
   min-height: 0;
 }
 
-.editor-panels > :global(.editor-body),
-.preview-body {
+.editor-panels > :global(.editor-body) {
   flex: 1;
   min-width: 0;
 }
@@ -20,7 +19,84 @@
   overflow: auto;
 }
 
-.preview-body {
+/* ── Preview overlay ──────────────────────────────────── */
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px 80px;
+  animation: previewFadeIn 0.15s ease;
+}
+
+@keyframes previewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.preview-overlay-header {
+  width: 100%;
+  max-width: 740px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 1;
+}
+
+.preview-overlay-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-close {
+  flex-shrink: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.12s,
+    color 0.12s;
+  margin-left: 16px;
+}
+
+.preview-close:hover {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+/* Inline split-pane (large screens) */
+.editor-panels .preview-body {
+  flex: 1;
+  min-width: 0;
   overflow-y: auto;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -29,6 +105,31 @@
   font-size: 14px;
   line-height: 1.75;
   color: var(--text);
+}
+
+/* Overlay content column */
+.preview-overlay .preview-body {
+  width: 100%;
+  max-width: 740px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+  padding: 36px 0;
+}
+
+/* Hide overlay on large screens */
+.preview-overlay {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  /* Switch to full-screen overlay on smaller screens */
+  .editor-panels .preview-body {
+    display: none;
+  }
+  .preview-overlay {
+    display: flex;
+  }
 }
 
 .preview-body :global(h1),

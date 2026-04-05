@@ -7,27 +7,47 @@
     createNote,
     store,
     loadFolders,
+    createFolder,
   } from './lib/store.svelte';
 
   loadNotes();
   loadFolders();
+
   const newNote = (folderId?: string | null) => {
     console.log(store.activeFolderId);
     createNote(folderId ?? undefined);
+  };
+
+  const newFolder = () => {
+    const name = prompt('Folder name');
+    if (name) {
+      createFolder(name, store.activeFolderId ?? undefined);
+    }
+  };
+
+  const goBack = () => {
+    if (store.mobilePane === 'editor') store.mobilePane = 'list';
+    else if (store.mobilePane === 'list') store.mobilePane = 'sidebar';
   };
 </script>
 
 <div class="app-shell">
   <div class="toolbar">
+    <button
+      class="toolbar-btn mobile-back"
+      class:hidden={store.mobilePane === 'sidebar'}
+      onclick={goBack}
+      aria-label="Back">←</button
+    >
     <span class="toolbar-title">JP<span>Notes</span></span>
     <button
       class="toolbar-btn primary"
       onclick={() => newNote(store.activeFolderId)}>New Note</button
     >
-    <button class="toolbar-btn">New Folder</button>
+    <button class="toolbar-btn" onclick={newFolder}>New Folder</button>
   </div>
 
-  <div class="app-body">
+  <div class="app-body" data-pane={store.mobilePane}>
     <Sidebar />
     <NoteList />
     <NoteEditor />

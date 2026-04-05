@@ -27,11 +27,14 @@
   </div>
   <ul class="note-list">
     {#each store.notes as note (note.id)}
-      <li class="note-item">
+      <li class="note-item" class:active={note.id === store.activeNoteId}>
         <button
           type="button"
           class="note-item-btn"
-          onclick={() => (store.activeNoteId = note.id)}
+          onclick={() => {
+            store.activeNoteId = note.id;
+            store.mobilePane = 'editor';
+          }}
         >
           <div class="note-title">{note.title}</div>
           <div class="note-meta">

@@ -65,6 +65,8 @@
   };
 </script>
 
+<svelte:window onkeydown={(e) => { if (e.key === 'Escape' && showPreview) showPreview = false; }} />
+
 <div class="pane-editor">
   {#if activeNote}
     <div class="editor-header">
@@ -110,3 +112,15 @@
     {/if}
   </div>
 </div>
+
+{#if showPreview}
+  <div class="preview-overlay" role="dialog" aria-modal="true" aria-label="Preview">
+    <div class="preview-overlay-header">
+      <span class="preview-overlay-title">{title || 'Untitled'}</span>
+      <button class="preview-close" onclick={() => (showPreview = false)} aria-label="Close preview">✕</button>
+    </div>
+    <div class="preview-body">
+      {@html previewHtml}
+    </div>
+  </div>
+{/if}
