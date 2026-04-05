@@ -7,21 +7,23 @@
 }
 
 :root {
-  --bg:          #0e0e11;
-  --surface:     #16161b;
-  --surface-2:   #1e1e26;
-  --surface-3:   #26262f;
-  --border:      rgba(255, 255, 255, 0.07);
-  --accent:      #7c5cfc;
-  --accent-dim:  rgba(124, 92, 252, 0.15);
-  --text:        #ededf2;
-  --text-2:      #8888a0;
-  --text-3:      #55556a;
-  --radius:      10px;
-  --radius-sm:   6px;
+  --bg: #0e0e11;
+  --surface: #16161b;
+  --surface-2: #1e1e26;
+  --surface-3: #26262f;
+  --border: rgba(255, 255, 255, 0.07);
+  --accent: #7c5cfc;
+  --accent-dim: rgba(124, 92, 252, 0.15);
+  --text: #ededf2;
+  --text-2: #8888a0;
+  --text-3: #55556a;
+  --radius: 10px;
+  --radius-sm: 6px;
 }
 
-html, body, #app {
+html,
+body,
+#app {
   height: 100vh;
   overflow: hidden;
   font-family: 'Inter', system-ui, sans-serif;
@@ -29,6 +31,31 @@ html, body, #app {
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
+}
+
+.cm-gutters {
+  background: var(--surface) !important;
+  border-right: 1px solid var(--border) !important;
+  padding-right: 4px !important;
+}
+
+.cm-activeLineGutter {
+  background: var(--surface-2) !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+.note-item-btn {
+  all: unset;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 /* ── App shell ────────────────────────────────────────── */
@@ -72,7 +99,9 @@ html, body, #app {
   padding: 5px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .toolbar-btn:hover {
@@ -143,6 +172,20 @@ html, body, #app {
   user-select: none;
 }
 
+.folder-tree button {
+  display: block;
+  padding: 5px 14px 5px 24px;
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 0;
+  transition:
+    background 0.12s,
+    color 0.12s;
+  background: none;
+  border: none;
+}
+
 .folder-tree details > summary {
   display: flex;
   align-items: center;
@@ -154,10 +197,14 @@ html, body, #app {
   font-weight: 500;
   border-radius: 0;
   list-style: none;
-  transition: background 0.12s, color 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 }
 
-.folder-tree details > summary::-webkit-details-marker { display: none; }
+.folder-tree details > summary::-webkit-details-marker {
+  display: none;
+}
 
 .folder-tree details > summary::before {
   content: '›';
@@ -189,7 +236,9 @@ html, body, #app {
   font-size: 13px;
   cursor: pointer;
   border-radius: 0;
-  transition: background 0.12s, color 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 }
 
 .folder-tree li > span:hover {
@@ -220,7 +269,10 @@ html, body, #app {
   border-radius: 99px;
   color: var(--text-2);
   cursor: pointer;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s,
+    border-color 0.12s;
 }
 
 .tag:hover {
@@ -294,9 +346,15 @@ html, body, #app {
   margin-top: 5px;
 }
 
-.note-item.selected .note-title { color: var(--text); }
-.note-item.selected .note-preview { color: var(--text-2); }
-.note-item.selected .note-meta { color: rgba(124, 92, 252, 0.6); }
+.note-item.selected .note-title {
+  color: var(--text);
+}
+.note-item.selected .note-preview {
+  color: var(--text-2);
+}
+.note-item.selected .note-meta {
+  color: rgba(124, 92, 252, 0.6);
+}
 
 /* ── Editor ───────────────────────────────────────────── */
 
@@ -336,7 +394,9 @@ html, body, #app {
   flex-wrap: wrap;
 }
 
-.editor-meta .sep { color: var(--text-3); }
+.editor-meta .sep {
+  color: var(--text-3);
+}
 
 .editor-body {
   flex: 1;
@@ -373,7 +433,16 @@ html, body, #app {
 
 /* ── Scrollbars ───────────────────────────────────────── */
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-3);
+}
