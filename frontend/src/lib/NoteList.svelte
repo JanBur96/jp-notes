@@ -1,6 +1,7 @@
 <script lang="ts">
   import { api } from './api';
   import { loadNotes, store } from './store.svelte';
+
   let activeFolderName = $state<string>('');
 
   $effect(() => {
@@ -39,13 +40,6 @@
           <div class="note-title">{note.title}</div>
           <div class="note-meta">
             <span>{new Date(note.createdAt).toLocaleDateString()}</span>
-            <!-- Phase 2: Tags display
-            {#if note.tags}
-              {#each note.tags as tag}
-                <span class="note-tag">{tag.name}</span>
-              {/each}
-            {/if}
-            -->
           </div>
         </button>
       </li>

@@ -1,10 +1,9 @@
-import type { Note, Folder } from './api'; // Phase 2: import Tag
+import type { Note, Folder } from './api';
 import { api } from './api';
 
 export const store = $state({
   notes: [] as Note[],
   folders: [] as Folder[],
-  // Phase 2: tags: [] as Tag[],
   activeNoteId: null as string | null,
   activeFolderId: null as string | null,
   searchQuery: '',
@@ -19,18 +18,12 @@ export async function loadFolders() {
   store.folders = await api.folders.list();
 }
 
-// Phase 2: export async function loadTags() {
-//   store.tags = await api.tags.list();
-// }
-
 export async function saveNote(
   id: string,
-  data: { title?: string; content?: string /* Phase 2: tags?: string[] */ }
+  data: { title?: string; content?: string }
 ) {
   const idx = store.notes.findIndex((n) => n.id === id);
   if (idx !== -1) Object.assign(store.notes[idx], data);
-  console.log(id, data);
-
   await api.notes.update(id, data);
 }
 
@@ -48,7 +41,6 @@ export async function createNote(folderId?: string) {
     title: '',
     content: '',
     folderId: folderToAssign?.id || undefined,
-    // Phase 2: tags
   });
 
   // Use the server-assigned note (with its real ID)

@@ -34,6 +34,8 @@ body,
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── CodeMirror overrides ─────────────────────────────── */
+
 .cm-gutters {
   background: var(--surface) !important;
   border-right: 1px solid var(--border) !important;
@@ -43,21 +45,6 @@ body,
 .cm-activeLineGutter {
   background: var(--surface-2) !important;
   border-right: 1px solid var(--border) !important;
-}
-
-.note-item-btn {
-  all: unset;
-  display: block;
-  width: 100%;
-  cursor: pointer;
-  text-align: left;
-  padding: 10px 14px;
-}
-
-.editor-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 /* ── App shell ────────────────────────────────────────── */
@@ -121,17 +108,6 @@ body,
   background: rgba(124, 92, 252, 0.25);
 }
 
-.toolbar-sep {
-  width: 1px;
-  height: 18px;
-  background: var(--border);
-  margin: 0 4px;
-}
-
-.toolbar-spacer {
-  flex: 1;
-}
-
 /* ── Three-pane body ──────────────────────────────────── */
 
 .app-body {
@@ -175,28 +151,25 @@ body,
 }
 
 .folder-tree button {
-  display: block;
+  display: flex;
+  width: 100%;
   padding: 5px 14px 5px 24px;
+  background: none;
+  border: none;
   color: var(--text-2);
   font-size: 13px;
   cursor: pointer;
-  border-radius: 0;
   transition:
     background 0.12s,
     color 0.12s;
-  background: none;
-  border: none;
-  width: 100%;
-  display: flex;
+}
+
+.folder-tree button:hover {
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 .folder-tree button.active {
-  background: var(--active);
-  width: 100%;
-  display: flex;
-}
-
-.folder-tree summary.active {
   background: var(--active);
 }
 
@@ -209,7 +182,6 @@ body,
   color: var(--text-2);
   font-size: 13px;
   font-weight: 500;
-  border-radius: 0;
   list-style: none;
   transition:
     background 0.12s,
@@ -238,6 +210,10 @@ body,
   color: var(--text);
 }
 
+.folder-tree summary.active {
+  background: var(--active);
+}
+
 .folder-tree ul {
   list-style: none;
   padding-left: 16px;
@@ -249,7 +225,6 @@ body,
   color: var(--text-2);
   font-size: 13px;
   cursor: pointer;
-  border-radius: 0;
   transition:
     background 0.12s,
     color 0.12s;
@@ -262,41 +237,6 @@ body,
 
 .folder-tree li > span.active {
   background: var(--accent-dim);
-  color: var(--accent);
-}
-
-/* ── Tags ─────────────────────────────────────────────── */
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  padding: 4px 14px 12px;
-}
-
-.tag {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 2px 8px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 99px;
-  color: var(--text-2);
-  cursor: pointer;
-  transition:
-    background 0.12s,
-    color 0.12s,
-    border-color 0.12s;
-}
-
-.tag:hover {
-  background: var(--surface-3);
-  color: var(--text);
-}
-
-.tag.active {
-  background: var(--accent-dim);
-  border-color: rgba(124, 92, 252, 0.3);
   color: var(--accent);
 }
 
@@ -331,10 +271,13 @@ body,
   background: var(--active);
 }
 
-.note-item.selected {
-  background: var(--accent-dim);
-  border-left: 2px solid var(--accent);
-  padding-left: 12px;
+.note-item-btn {
+  all: unset;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  padding: 10px 14px;
 }
 
 .note-title {
@@ -346,31 +289,12 @@ body,
   color: var(--text);
 }
 
-.note-preview {
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 3px;
-  color: var(--text-2);
-}
-
 .note-meta {
   font-size: 11px;
   color: var(--text-3);
   display: flex;
   justify-content: space-between;
   margin-top: 5px;
-}
-
-.note-item.selected .note-title {
-  color: var(--text);
-}
-.note-item.selected .note-preview {
-  color: var(--text-2);
-}
-.note-item.selected .note-meta {
-  color: rgba(124, 92, 252, 0.6);
 }
 
 /* ── Editor ───────────────────────────────────────────── */
@@ -383,6 +307,12 @@ body,
   flex-direction: column;
   gap: 12px;
   background: var(--bg);
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .editor-title {
@@ -411,17 +341,9 @@ body,
   flex-wrap: wrap;
 }
 
-.editor-meta .sep {
-  color: var(--text-3);
-}
-
 .editor-body {
   flex: 1;
   width: 100%;
-  resize: none;
-  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-  font-size: 13px;
-  line-height: 1.7;
   min-height: 0;
   background: var(--surface);
   color: var(--text);
@@ -429,11 +351,6 @@ body,
   border-radius: var(--radius);
   padding: 16px;
   outline: none;
-  transition: border-color 0.15s;
-}
-
-.editor-body:focus {
-  border-color: rgba(124, 92, 252, 0.4);
 }
 
 /* ── Status bar ───────────────────────────────────────── */
@@ -464,7 +381,6 @@ body,
 
 /* ── Responsive ───────────────────────────────────────── */
 
-/* Tablet: hide sidebar when editor is open */
 @media (max-width: 860px) {
   .pane-sidebar {
     width: 180px;
@@ -485,7 +401,6 @@ body,
   }
 }
 
-/* Mobile: single-pane navigation */
 @media (max-width: 600px) {
   .mobile-back {
     display: block;
@@ -516,6 +431,16 @@ body,
     font-size: 18px;
   }
 
+  .editor-header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .editor-header .editor-title {
+    width: 100%;
+    flex-shrink: 0;
+  }
+
   /* Show only the active pane */
   .app-body[data-pane='sidebar'] .pane-list,
   .app-body[data-pane='sidebar'] .pane-editor {
@@ -536,17 +461,6 @@ body,
     padding: 5px 12px;
     font-size: 10px;
     gap: 8px;
-  }
-
-  /* Editor header: wrap buttons */
-  .editor-header {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .editor-header .editor-title {
-    width: 100%;
-    flex-shrink: 0;
   }
 }
 

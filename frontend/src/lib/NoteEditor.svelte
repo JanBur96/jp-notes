@@ -65,7 +65,11 @@
   };
 </script>
 
-<svelte:window onkeydown={(e) => { if (e.key === 'Escape' && showPreview) showPreview = false; }} />
+<svelte:window
+  onkeydown={(e) => {
+    if (e.key === 'Escape' && showPreview) showPreview = false;
+  }}
+/>
 
 <div class="pane-editor">
   {#if activeNote}
@@ -81,25 +85,15 @@
         onclick={() => (showPreview = !showPreview)}>Preview</button
       >
       <button class="toolbar-btn" onclick={save}>Save</button>
-      <!-- TODO: Pop Up you really want to delete? -->
+      <!-- TODO: Confirm before delete -->
       <!-- TODO: Put note in archive -->
       <button class="toolbar-btn" onclick={deleteCurrentNote}>Delete</button>
     </div>
 
     <div class="editor-meta">
-      <span>{activeNote?.folder?.name ?? ''}</span>
+      <span>{activeNote.folder?.name ?? ''}</span>
       <span class="sep">·</span>
-      <span>
-        {activeNote?.createdAt
-          ? new Date(activeNote.createdAt).toLocaleDateString()
-          : ''}
-      </span>
-      <!-- Phase 2: Tags display
-      <span class="sep">·</span>
-      {#each activeNote?.tags || [] as tag}
-        <span class="tag">{tag.name}</span>
-      {/each}
-      -->
+      <span>{new Date(activeNote.createdAt).toLocaleDateString()}</span>
     </div>
   {/if}
 

@@ -14,7 +14,6 @@
   loadFolders();
 
   const newNote = (folderId?: string | null) => {
-    console.log(store.activeFolderId);
     createNote(folderId ?? undefined);
   };
 
