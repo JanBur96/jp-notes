@@ -47,6 +47,7 @@ npx prisma init
       tags: {
         connect: [{ name: "typescript" }, { name: "reference" }],
       },
+      archived: true,
     },
   });
 

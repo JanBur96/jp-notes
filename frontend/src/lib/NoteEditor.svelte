@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { saveNote, deleteNote, store } from './store.svelte';
+  import { saveNote, deleteNote, unarchiveNote, store } from './store.svelte';
   import { EditorView, basicSetup } from 'codemirror';
   import { markdown } from '@codemirror/lang-markdown';
   import { EditorState } from '@codemirror/state';
@@ -13,11 +13,13 @@
   let showPreview = $state(false);
 
   const activeNote = $derived(
-    store.notes.find((n) => n.id === store.activeNoteId) ?? null
+    store.notes.find((n) => n.id === store.activeNoteId) ??
+    store.archivedNotes.find((n) => n.id === store.activeNoteId) ??
+    null
   );
 
   const previewHtml = $derived(
-    DOMPurify.sanitize(marked.parse(content) as string)
+    DOMPurify.sanitize(marked.parse(content, { async: false }))
   );
 
   const updateListener = EditorView.updateListener.of((update) => {
@@ -59,9 +61,7 @@
   };
 
   const deleteCurrentNote = () => {
-    if (store.activeNoteId) {
-      deleteNote(store.activeNoteId);
-    }
+    store.modal = { kind: 'confirm-delete-note' };
   };
 </script>
 
@@ -85,9 +85,12 @@
         onclick={() => (showPreview = !showPreview)}>Preview</button
       >
       <button class="toolbar-btn" onclick={save}>Save</button>
-      <!-- TODO: Confirm before delete -->
-      <!-- TODO: Put note in archive -->
-      <button class="toolbar-btn" onclick={deleteCurrentNote}>Delete</button>
+      {#if activeNote?.archived}
+        <button class="toolbar-btn" onclick={() => activeNote && unarchiveNote(activeNote.id)}>Unarchive</button>
+      {/if}
+      <button class="toolbar-btn" onclick={deleteCurrentNote}>
+        {activeNote?.archived ? 'Delete Forever' : 'Delete'}
+      </button>
     </div>
 
     <div class="editor-meta">
@@ -108,10 +111,19 @@
 </div>
 
 {#if showPreview}
-  <div class="preview-overlay" role="dialog" aria-modal="true" aria-label="Preview">
+  <div
+    class="preview-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Preview"
+  >
     <div class="preview-overlay-header">
       <span class="preview-overlay-title">{title || 'Untitled'}</span>
-      <button class="preview-close" onclick={() => (showPreview = false)} aria-label="Close preview">✕</button>
+      <button
+        class="preview-close"
+        onclick={() => (showPreview = false)}
+        aria-label="Close preview">✕</button
+      >
     </div>
     <div class="preview-body">
       {@html previewHtml}

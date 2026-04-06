@@ -1,11 +1,17 @@
 <script lang="ts">
-  import { api } from './api';
-  import { loadNotes, store } from './store.svelte';
+  import { loadNotes, loadArchivedNotes, store } from './store.svelte';
 
   let activeFolderName = $state<string>('');
 
   $effect(() => {
     const folderId = store.activeFolderId;
+    const archiveMode = store.archiveMode;
+
+    if (archiveMode) {
+      void loadArchivedNotes();
+      activeFolderName = 'Archive';
+      return;
+    }
 
     void loadNotes(folderId);
 
@@ -14,12 +20,13 @@
       return;
     }
 
-    void api.folders.get(folderId).then((folder) => {
-      if (store.activeFolderId === folderId) {
-        activeFolderName = folder.name;
-      }
-    });
+    activeFolderName =
+      store.folders.find((f) => f.id === folderId)?.name || 'All Notes';
   });
+
+  const displayedNotes = $derived(
+    store.archiveMode ? store.archivedNotes : store.notes
+  );
 </script>
 
 <div class="pane-list">
@@ -27,7 +34,7 @@
     NOTES {activeFolderName ? `— ${activeFolderName}` : ''}
   </div>
   <ul class="note-list">
-    {#each store.notes as note (note.id)}
+    {#each displayedNotes as note (note.id)}
       <li class="note-item" class:active={note.id === store.activeNoteId}>
         <button
           type="button"

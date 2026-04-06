@@ -27,6 +27,7 @@ model Note {
   folderId String?
   folder   Folder? @relation(fields: [folderId], references: [id])
   tags     Tag[]
+  archived Boolean  @default(false)
 }
 
 model Tag {

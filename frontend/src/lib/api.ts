@@ -1,3 +1,5 @@
+import { mockApi } from './api.mock';
+
 const BASE = '/api';
 
 export interface Note {
@@ -10,6 +12,7 @@ export interface Note {
   tags: Tag[];
   createdAt: string;
   updatedAt: string;
+  archived: boolean;
 }
 
 export interface Folder {
@@ -34,11 +37,13 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
-export const api = {
+const realApi = {
   notes: {
-    list: (params?: { folderId?: string | null; search?: string }) => {
+    list: (params?: { folderId?: string | null; search?: string; archived?: boolean }) => {
       const query = new URLSearchParams(
-        Object.entries(params || {}).filter(([, v]) => v) as [string, string][]
+        Object.entries(params || {})
+          .filter(([, v]) => v !== undefined && v !== null && v !== '')
+          .map(([k, v]) => [k, String(v)])
       ).toString();
       return request<Note[]>(`/notes${query ? `?${query}` : ''}`);
     },
@@ -47,7 +52,13 @@ export const api = {
       request<Note>('/notes', { method: 'POST', body: JSON.stringify(data) }),
     update: (
       id: string,
-      data: { title?: string; content?: string; pinned?: boolean; folderId?: string | null }
+      data: {
+        title?: string;
+        content?: string;
+        pinned?: boolean;
+        archived?: boolean;
+        folderId?: string | null;
+      }
     ) =>
       request<Note>(`/notes/${id}`, {
         method: 'PUT',
@@ -57,7 +68,7 @@ export const api = {
   },
   folders: {
     list: () => request<Folder[]>('/folders'),
-    get: (id: string | null) => request<Folder>(`/folders/${id}`),
+    get: (id: string) => request<Folder>(`/folders/${id}`),
     create: (data: { name: string; parentId?: string }) =>
       request<Folder>('/folders', {
         method: 'POST',
@@ -72,3 +83,5 @@ export const api = {
       request<void>(`/folders/${id}`, { method: 'DELETE' }),
   },
 };
+
+export const api = import.meta.env.VITE_DEMO === 'true' ? mockApi : realApi;

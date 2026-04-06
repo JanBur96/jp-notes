@@ -1,6 +1,11 @@
 import type { Note, Folder } from './api';
 import { api } from './api';
 
+type ModalState =
+  | null
+  | { kind: 'create-folder'; name: string }
+  | { kind: 'confirm-delete-note' };
+
 export const store = $state({
   notes: [] as Note[],
   folders: [] as Folder[],
@@ -8,52 +13,138 @@ export const store = $state({
   activeFolderId: null as string | null,
   searchQuery: '',
   mobilePane: 'sidebar' as 'sidebar' | 'list' | 'editor',
+  hasError: '',
+  modal: null as ModalState,
+  archiveMode: false,
+  archivedNotes: [] as Note[],
 });
 
 export async function loadNotes(folderId?: string | null) {
-  store.notes = await api.notes.list({ folderId });
+  const expected = folderId ?? null;
+  try {
+    const notes = await api.notes.list({ folderId });
+    // Discard result if the folder changed while the request was in flight
+    if (store.activeFolderId === expected && !store.archiveMode) {
+      store.notes = notes;
+    }
+  } catch (error) {
+    console.error('Failed to load notes:', error);
+    store.hasError = 'Failed to load notes';
+  }
 }
 
 export async function loadFolders() {
-  store.folders = await api.folders.list();
+  try {
+    store.folders = await api.folders.list();
+  } catch (error) {
+    console.error('Failed to load folders:', error);
+    store.hasError = 'Failed to load folders';
+  }
 }
 
-export async function saveNote(
-  id: string,
-  data: { title?: string; content?: string }
-) {
+export async function loadArchivedNotes() {
+  try {
+    const notes = await api.notes.list({ archived: true });
+    if (store.archiveMode) {
+      store.archivedNotes = notes;
+    }
+  } catch (error) {
+    console.error('Failed to load archived notes:', error);
+    store.hasError = 'Failed to load archived notes';
+  }
+}
+
+export async function saveNote(id: string, data: { title?: string; content?: string }) {
   const idx = store.notes.findIndex((n) => n.id === id);
-  if (idx !== -1) Object.assign(store.notes[idx], data);
-  await api.notes.update(id, data);
-}
-
-export async function deleteNote(id: string) {
-  store.notes = store.notes.filter((n) => n.id !== id);
-  await api.notes.delete(id);
+  const prev = idx !== -1 ? { ...store.notes[idx] } : null;
+  try {
+    if (idx !== -1) Object.assign(store.notes[idx], data);
+    await api.notes.update(id, data);
+  } catch (error) {
+    console.error('Failed to save note:', error);
+    if (prev && idx !== -1) Object.assign(store.notes[idx], prev);
+    store.hasError = 'Failed to save note';
+  }
 }
 
 export async function createNote(folderId?: string) {
-  const folderToAssign = folderId
-    ? store.folders.find((f) => f.id === folderId)
-    : null;
+  try {
+    const folder = folderId ? store.folders.find((f) => f.id === folderId) : null;
+    const created = await api.notes.create({
+      title: '',
+      content: '',
+      folderId: folder?.id,
+    });
+    store.notes.push({ ...created, folder: folder ?? null });
+    store.activeNoteId = created.id;
+    store.mobilePane = 'editor';
+  } catch (error) {
+    console.error('Failed to create note:', error);
+    store.hasError = 'Failed to create note';
+  }
+}
 
-  const created = await api.notes.create({
-    title: '',
-    content: '',
-    folderId: folderToAssign?.id || undefined,
-  });
+export async function archiveNote(id: string) {
+  const note = store.notes.find((n) => n.id === id);
+  try {
+    await api.notes.update(id, { archived: true });
+    store.notes = store.notes.filter((n) => n.id !== id);
+    if (note) store.archivedNotes.push({ ...note, archived: true });
+    store.activeNoteId = null;
+  } catch (error) {
+    console.error('Failed to archive note:', error);
+    store.hasError = 'Failed to archive note';
+  }
+}
 
-  // Use the server-assigned note (with its real ID)
-  store.notes.push({ ...created, folder: folderToAssign || null });
-  store.activeNoteId = created.id;
-  store.mobilePane = 'editor';
+export async function unarchiveNote(id: string) {
+  const note = store.archivedNotes.find((n) => n.id === id);
+  try {
+    await api.notes.update(id, { archived: false });
+    store.archivedNotes = store.archivedNotes.filter((n) => n.id !== id);
+    if (note) store.notes.push({ ...note, archived: false });
+    store.activeNoteId = null;
+  } catch (error) {
+    console.error('Failed to unarchive note:', error);
+    store.hasError = 'Failed to unarchive note';
+  }
+}
+
+export async function deleteNote(id: string) {
+  const note =
+    store.notes.find((n) => n.id === id) ??
+    store.archivedNotes.find((n) => n.id === id);
+
+  if (note?.archived) {
+    try {
+      store.archivedNotes = store.archivedNotes.filter((n) => n.id !== id);
+      store.activeNoteId = null;
+      await api.notes.delete(id);
+    } catch (error) {
+      console.error('Failed to delete note:', error);
+      store.hasError = 'Failed to delete note';
+    }
+  } else {
+    await archiveNote(id);
+  }
 }
 
 export async function createFolder(name: string, parentId?: string | null) {
-  const newFolder = await api.folders.create({
-    name,
-    parentId: parentId || undefined,
-  });
-  store.folders.push(newFolder);
-  store.activeFolderId = newFolder.id;
+  try {
+    const newFolder = await api.folders.create({ name, parentId: parentId || undefined });
+    store.folders.push(newFolder);
+    store.activeFolderId = newFolder.id;
+    store.archiveMode = false;
+  } catch (error) {
+    console.error('Failed to create folder:', error);
+    store.hasError = 'Failed to create folder';
+  }
+}
+
+export function openDeleteNoteModal() {
+  store.modal = { kind: 'confirm-delete-note' };
+}
+
+export function closeModal() {
+  store.modal = null;
 }
