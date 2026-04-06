@@ -39,7 +39,11 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 const realApi = {
   notes: {
-    list: (params?: { folderId?: string | null; search?: string; archived?: boolean }) => {
+    list: (params?: {
+      folderId?: string | null;
+      search?: string;
+      archived?: boolean;
+    }) => {
       const query = new URLSearchParams(
         Object.entries(params || {})
           .filter(([, v]) => v !== undefined && v !== null && v !== '')
@@ -81,6 +85,12 @@ const realApi = {
       }),
     delete: (id: string) =>
       request<void>(`/folders/${id}`, { method: 'DELETE' }),
+  },
+  ai: {
+    summarize: (noteId: string) =>
+      request<{ summary: string }>(`/ai/summarize/${noteId}`, {
+        method: 'POST',
+      }),
   },
 };
 

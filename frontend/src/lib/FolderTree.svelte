@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Folder } from '$lib/api';
+  import type { Folder } from './api';
   import Self from './FolderTree.svelte';
 
   let {
@@ -14,11 +14,13 @@
     onSelect: (id: string) => void;
   }>();
 
-  const children = $derived(folders.filter((f) => f.parentId === parentId));
+  const children = $derived(
+    folders.filter((f: Folder) => f.parentId === parentId)
+  );
 </script>
 
 {#each children as folder (folder.id)}
-  {@const hasChildren = folders.some((f) => f.parentId === folder.id)}
+  {@const hasChildren = folders.some((f: Folder) => f.parentId === folder.id)}
   <li>
     {#if hasChildren}
       <details>

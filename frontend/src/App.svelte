@@ -33,6 +33,24 @@
   const disableError = () => {
     store.hasError = '';
   };
+
+  function handleCreateFolder() {
+    if (store.modal?.kind !== 'create-folder') return;
+    if (!store.modal.name.trim()) return;
+
+    createFolder(store.modal.name.trim(), store.activeFolderId ?? undefined);
+
+    store.modal = null;
+  }
+
+  function handleDeleteNote() {
+    if (store.modal?.kind !== 'confirm-delete-note') return;
+    if (!store.activeNoteId) return;
+
+    deleteNote(store.activeNoteId);
+
+    store.modal = null;
+  }
 </script>
 
 <div class="app-shell">
@@ -47,11 +65,7 @@
       </label>
       <button
         class="modal-button toolbar-btn primary"
-        onclick={() => {
-          if (!store.modal.name.trim()) return;
-          createFolder(store.modal.name.trim(), store.activeFolderId ?? undefined);
-          store.modal = null;
-        }}>Create</button
+        onclick={handleCreateFolder}>Create</button
       >
     </Modal>
   {/if}
@@ -60,10 +74,7 @@
       <p>Are you sure you want to delete this note?</p>
       <button
         class="modal-button toolbar-btn primary"
-        onclick={() => {
-          if (store.activeNoteId) deleteNote(store.activeNoteId);
-          store.modal = null;
-        }}>Delete</button
+        onclick={handleDeleteNote}>Delete</button
       >
       <button
         class="modal-button toolbar-btn"
@@ -80,7 +91,7 @@
       onclick={goBack}
       aria-label="Back">←</button
     >
-    <span class="toolbar-title">JP<span>Notes</span></span>
+    <span class="toolbar-title">JP<em>Notes</em></span>
     <button
       class="toolbar-btn primary"
       onclick={() => newNote(store.activeFolderId)}>New Note</button
@@ -103,10 +114,15 @@
   </div>
 
   <div class="status-bar">
-    <span>{store.archiveMode
-      ? 'Archive'
-      : store.folders.find((f) => f.id === store.activeFolderId)?.name ?? 'All Notes'}</span>
+    <span
+      >{store.archiveMode
+        ? 'Archive'
+        : (store.folders.find((f) => f.id === store.activeFolderId)?.name ??
+          'All Notes')}</span
+    >
     <span>·</span>
-    <span>{(store.archiveMode ? store.archivedNotes : store.notes).length} notes</span>
+    <span
+      >{(store.archiveMode ? store.archivedNotes : store.notes).length} notes</span
+    >
   </div>
 </div>

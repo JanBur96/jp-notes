@@ -17,13 +17,14 @@ export const store = $state({
   modal: null as ModalState,
   archiveMode: false,
   archivedNotes: [] as Note[],
+  aiLoading: false,
+  aiSummary: '' as string,
 });
 
 export async function loadNotes(folderId?: string | null) {
   const expected = folderId ?? null;
   try {
     const notes = await api.notes.list({ folderId });
-    // Discard result if the folder changed while the request was in flight
     if (store.activeFolderId === expected && !store.archiveMode) {
       store.notes = notes;
     }
@@ -54,7 +55,10 @@ export async function loadArchivedNotes() {
   }
 }
 
-export async function saveNote(id: string, data: { title?: string; content?: string }) {
+export async function saveNote(
+  id: string,
+  data: { title?: string; content?: string }
+) {
   const idx = store.notes.findIndex((n) => n.id === id);
   const prev = idx !== -1 ? { ...store.notes[idx] } : null;
   try {
@@ -69,7 +73,9 @@ export async function saveNote(id: string, data: { title?: string; content?: str
 
 export async function createNote(folderId?: string) {
   try {
-    const folder = folderId ? store.folders.find((f) => f.id === folderId) : null;
+    const folder = folderId
+      ? store.folders.find((f) => f.id === folderId)
+      : null;
     const created = await api.notes.create({
       title: '',
       content: '',
@@ -131,7 +137,10 @@ export async function deleteNote(id: string) {
 
 export async function createFolder(name: string, parentId?: string | null) {
   try {
-    const newFolder = await api.folders.create({ name, parentId: parentId || undefined });
+    const newFolder = await api.folders.create({
+      name,
+      parentId: parentId || undefined,
+    });
     store.folders.push(newFolder);
     store.activeFolderId = newFolder.id;
     store.archiveMode = false;
@@ -147,4 +156,20 @@ export function openDeleteNoteModal() {
 
 export function closeModal() {
   store.modal = null;
+}
+
+export function summarizeNote(id: string) {
+  store.aiLoading = true;
+  api.ai
+    .summarize(id)
+    .then((res) => {
+      store.aiSummary = res.summary;
+    })
+    .catch((error) => {
+      console.error('Failed to summarize note:', error);
+      store.hasError = 'Failed to summarize note';
+    })
+    .finally(() => {
+      store.aiLoading = false;
+    });
 }

@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { saveNote, deleteNote, unarchiveNote, store } from './store.svelte';
+  import {
+    saveNote,
+    deleteNote,
+    unarchiveNote,
+    store,
+    summarizeNote,
+  } from './store.svelte';
   import { EditorView, basicSetup } from 'codemirror';
   import { markdown } from '@codemirror/lang-markdown';
   import { EditorState } from '@codemirror/state';
@@ -14,8 +20,8 @@
 
   const activeNote = $derived(
     store.notes.find((n) => n.id === store.activeNoteId) ??
-    store.archivedNotes.find((n) => n.id === store.activeNoteId) ??
-    null
+      store.archivedNotes.find((n) => n.id === store.activeNoteId) ??
+      null
   );
 
   const previewHtml = $derived(
@@ -48,6 +54,9 @@
       view?.destroy();
       view = null;
     }
+
+    console.log('AI Loading:', store.aiLoading);
+    console.log('AI Summary:', store.aiSummary);
   });
 
   $effect(() => {
@@ -63,6 +72,11 @@
   const deleteCurrentNote = () => {
     store.modal = { kind: 'confirm-delete-note' };
   };
+
+  const handleSummarizeNote = () => {
+    summarizeNote(store.activeNoteId!);
+    // log when aiLoading or aiSummary changes to verify that the summarizeNote function is working
+  };
 </script>
 
 <svelte:window
@@ -72,41 +86,67 @@
 />
 
 <div class="pane-editor">
-  {#if activeNote}
-    <div class="editor-header">
-      <input
-        class="editor-title"
-        type="text"
-        placeholder="Untitled"
-        bind:value={title}
-      />
-      <button
-        class="toolbar-btn {showPreview ? 'primary' : ''}"
-        onclick={() => (showPreview = !showPreview)}>Preview</button
-      >
-      <button class="toolbar-btn" onclick={save}>Save</button>
-      {#if activeNote?.archived}
-        <button class="toolbar-btn" onclick={() => activeNote && unarchiveNote(activeNote.id)}>Unarchive</button>
-      {/if}
-      <button class="toolbar-btn" onclick={deleteCurrentNote}>
-        {activeNote?.archived ? 'Delete Forever' : 'Delete'}
-      </button>
-    </div>
-
-    <div class="editor-meta">
-      <span>{activeNote.folder?.name ?? ''}</span>
-      <span class="sep">·</span>
-      <span>{new Date(activeNote.createdAt).toLocaleDateString()}</span>
-    </div>
-  {/if}
-
-  <div class="editor-panels">
-    <div class="editor-body" bind:this={editorContainer}></div>
-    {#if showPreview}
-      <div class="preview-body">
-        {@html previewHtml}
+  <div class="editor-inner">
+    {#if activeNote}
+      <div class="editor-header">
+        <input
+          class="editor-title"
+          type="text"
+          placeholder="Untitled"
+          bind:value={title}
+        />
+        <div class="editor-airesult">
+          <span>Summarizing...</span>
+          {#if store.aiLoading}{:else if store.aiSummary}
+            <div class="editor-airesult-content">
+              <strong>Summary:</strong>
+              <p>{store.aiSummary}</p>
+            </div>
+          {/if}
+        </div>
+      </div>
+      <div class="editor-subheader">
+        <div class="editor-meta">
+          <span>{activeNote.folder?.name ?? 'All Notes'}</span>
+          <span class="sep">·</span>
+          <span>{new Date(activeNote.createdAt).toLocaleDateString()}</span>
+        </div>
+        <div class="editor-btns">
+          <button class="toolbar-btn" onclick={handleSummarizeNote}>
+            Summarize
+          </button>
+          <button
+            class="toolbar-btn {showPreview ? 'primary' : ''}"
+            onclick={() => (showPreview = !showPreview)}>Preview</button
+          >
+          <button class="toolbar-btn" onclick={save}>Save</button>
+          {#if activeNote?.archived}
+            <button
+              class="toolbar-btn"
+              onclick={() => activeNote && unarchiveNote(activeNote.id)}
+              >Unarchive</button
+            >
+          {/if}
+          <button class="toolbar-btn" onclick={deleteCurrentNote}>
+            {activeNote?.archived ? 'Delete Forever' : 'Delete'}
+          </button>
+        </div>
       </div>
     {/if}
+
+    <div class="editor-panels">
+      {#if !activeNote}
+        <div class="editor-empty">
+          <p>Select a note or create a new one</p>
+        </div>
+      {/if}
+      <div class="editor-body" bind:this={editorContainer}></div>
+      {#if showPreview}
+        <div class="preview-body">
+          {@html previewHtml}
+        </div>
+      {/if}
+    </div>
   </div>
 </div>
 
