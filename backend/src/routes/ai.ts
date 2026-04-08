@@ -15,22 +15,52 @@ router.post(
       });
       if (!note) return res.status(404).json({ error: "Note not found" });
 
+      if (!note.content.trim()) {
+        return res
+          .status(400)
+          .json({ error: "Cannot summarize an empty note" });
+      }
+
+      // Cold-start calls on a freshly-loaded model can take a while, so the
+      // timeout needs to be generous. 3 minutes covers realistic cases
+      // without letting a truly hung request wait forever.
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
-      const response = await fetch("http://localhost:11434/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "llama3.1:8b",
-          prompt: `Summarize the following note concisely. Output only the summary (not too small) without any preamble or commentary:\n\n${note.content}`,
-          stream: false,
-        }),
-        signal: controller.signal,
-      });
+      const timeoutId = setTimeout(() => controller.abort(), 180000);
+
+      let ollamaRes: globalThis.Response;
+      try {
+        ollamaRes = await fetch("http://localhost:11434/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "llama3.1:8b",
+            prompt: `Summarize the following note concisely. Output only the summary (not too small) without any preamble or commentary:\n\n${note.content}`,
+            stream: false,
+          }),
+          signal: controller.signal,
+        });
+      } catch (err) {
+        clearTimeout(timeoutId);
+        if ((err as Error).name === "AbortError") {
+          return res
+            .status(504)
+            .json({ error: "AI service timed out. Try again in a moment." });
+        }
+        // Most likely ECONNREFUSED — Ollama isn't running
+        return res.status(503).json({
+          error:
+            "AI service unavailable. Make sure Ollama is running on :11434.",
+        });
+      }
       clearTimeout(timeoutId);
 
-      if (!response.ok) throw new Error(`Ollama API error: ${response.status}`);
-      const data = await response.json();
+      if (!ollamaRes.ok) {
+        return res
+          .status(502)
+          .json({ error: `AI service returned ${ollamaRes.status}` });
+      }
+
+      const data = (await ollamaRes.json()) as { response?: string };
       res.json({ summary: data.response?.trim() ?? "" });
     } catch (error) {
       next(error);
