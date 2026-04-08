@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Folder } from './api';
   import { store } from './store.svelte';
+  import { isDescendant } from './folderUtils';
   import Self from './FolderTree.svelte';
 
   let {
@@ -25,22 +26,13 @@
     folders.filter((f: Folder) => f.parentId === parentId)
   );
 
-  function isDescendant(ancestorId: string, candidateId: string): boolean {
-    let current = folders.find((f: Folder) => f.id === candidateId);
-    while (current?.parentId) {
-      if (current.parentId === ancestorId) return true;
-      current = folders.find((f: Folder) => f.id === current!.parentId);
-    }
-    return false;
-  }
-
   function canAcceptDrop(targetId: string): boolean {
     const item = store.draggingItem;
     if (!item) return false;
     if (item.kind === 'note') return true;
-    // folder: reject self and descendants
+    // Folder drag: reject drops on self or on any descendant (would cycle)
     if (item.id === targetId) return false;
-    if (isDescendant(item.id, targetId)) return false;
+    if (isDescendant(folders, item.id, targetId)) return false;
     return true;
   }
 
