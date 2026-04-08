@@ -104,9 +104,9 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<div class="pane-editor">
-  <div class="editor-inner">
-    {#if activeNote}
+<main class="pane-editor">
+  {#if activeNote}
+    <div class="editor-inner">
       <EditorHeader
         note={activeNote}
         {title}
@@ -119,29 +119,53 @@
         onDelete={handleDelete}
         onUnarchive={handleUnarchive}
       />
-    {/if}
 
-    <div class="editor-panels">
-      {#if !activeNote}
-        <div class="editor-empty">
-          <p>Select a note or create a new one</p>
-        </div>
-      {/if}
-      <CodeMirrorEditor
-        noteId={activeNote?.id ?? null}
-        initialContent={activeNote?.content ?? ''}
-        onChange={(v) => (content = v)}
-      />
-      {#if showPreview && activeNote}
-        <div class="preview-pane">
-          <MarkdownView html={previewHtml} />
-        </div>
-      {/if}
+      <div class="editor-panels">
+        <CodeMirrorEditor
+          noteId={activeNote?.id ?? null}
+          initialContent={activeNote?.content ?? ''}
+          onChange={(v) => (content = v)}
+        />
+        {#if showPreview}
+          <div class="preview-pane">
+            <MarkdownView html={previewHtml} />
+          </div>
+        {/if}
+      </div>
     </div>
-  </div>
+  {:else}
+    <div class="editor-empty">
+      <div class="empty-ornament" aria-hidden="true">
+        <svg viewBox="0 0 80 80" fill="none">
+          <circle cx="40" cy="40" r="38" stroke="url(#ringStroke)" stroke-width="0.6" stroke-dasharray="2 4"/>
+          <circle cx="40" cy="40" r="26" stroke="url(#ringStroke)" stroke-width="0.8"/>
+          <path
+            d="M28 32h24M28 40h24M28 48h16"
+            stroke="url(#ringStroke)"
+            stroke-width="1.4"
+            stroke-linecap="round"
+          />
+          <defs>
+            <linearGradient id="ringStroke" x1="0" y1="0" x2="80" y2="80">
+              <stop offset="0" stop-color="#f1c774" stop-opacity="0.8"/>
+              <stop offset="1" stop-color="#c89040" stop-opacity="0.3"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h2 class="empty-heading">A quiet page</h2>
+      <p class="empty-sub">
+        Select a note from the library, or begin something new.
+      </p>
+      <div class="empty-hint">
+        <kbd>Ctrl</kbd><span>+</span><kbd>Alt</kbd><span>+</span><kbd>N</kbd>
+        <span class="empty-hint-label">for a new note</span>
+      </div>
+    </div>
+  {/if}
 
   <AiSummaryBar />
-</div>
+</main>
 
 {#if showPreview && activeNote}
   <PreviewOverlay
@@ -153,12 +177,13 @@
 
 <style>
   .pane-editor {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex: 1;
     flex-direction: column;
-    justify-content: center;
+    justify-content: stretch;
     overflow: hidden;
-    background: var(--bg);
   }
 
   .editor-inner {
@@ -167,47 +192,140 @@
     flex-direction: column;
     min-width: 0;
     min-height: 0;
-    padding: 40px 32px 0;
+    padding: 44px 48px 0;
   }
 
   .editor-panels {
     display: flex;
     flex: 1;
-    gap: 16px;
+    gap: 20px;
     min-height: 0;
-    padding-top: 16px;
+    padding-top: 20px;
   }
+
+  /* ── Empty state ─────────────────────────────────────────
+     A calm, literary welcome. The ornament glows softly and
+     the hint shows the keyboard shortcut to start writing. */
 
   .editor-empty {
     display: flex;
     flex: 1;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-bottom: 60px;
+    gap: 18px;
+    padding: 40px 24px 100px;
+    text-align: center;
   }
 
-  .editor-empty p {
-    font-size: 13px;
+  .empty-ornament {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: breathe 6s ease-in-out infinite;
+  }
+
+  .empty-ornament::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(
+      circle at center,
+      rgba(228, 178, 89, 0.14),
+      transparent 65%
+    );
+    filter: blur(8px);
+  }
+
+  .empty-ornament svg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.92; }
+    50% { transform: scale(1.03); opacity: 1; }
+  }
+
+  .empty-heading {
+    margin-top: 6px;
+    font-family: 'Lora', Georgia, serif;
     font-style: italic;
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--text);
+  }
+
+  .empty-sub {
+    max-width: 320px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-2);
+  }
+
+  .empty-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 11px;
     color: var(--text-3);
   }
+
+  .empty-hint kbd {
+    display: inline-flex;
+    align-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    justify-content: center;
+    border: 1px solid var(--border-hi);
+    border-bottom-color: rgba(140, 180, 240, 0.2);
+    border-radius: 5px;
+    background: rgba(20, 30, 50, 0.6);
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text-2);
+  }
+
+  .empty-hint-label {
+    margin-left: 8px;
+    font-family: 'Lora', Georgia, serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  /* ── Preview pane ────────────────────────────────────── */
 
   .preview-pane {
     flex: 1;
     min-width: 0;
     overflow-y: auto;
-    padding: 20px 24px;
+    padding: 28px 32px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: var(--surface);
-    font-size: 14px;
+    background:
+      linear-gradient(180deg, rgba(15, 24, 42, 0.55), rgba(8, 14, 26, 0.4));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-md);
+    font-size: 14.5px;
     line-height: 1.8;
     color: var(--text);
   }
 
   @media (max-width: 860px) {
     .editor-inner {
-      padding: 20px 24px 0;
+      padding: 28px 32px 0;
     }
 
     /* On narrow screens the fullscreen overlay replaces the split pane */
@@ -218,7 +336,11 @@
 
   @media (max-width: 600px) {
     .editor-inner {
-      padding: 16px 16px 0;
+      padding: 18px 18px 0;
+    }
+
+    .empty-heading {
+      font-size: 22px;
     }
   }
 </style>

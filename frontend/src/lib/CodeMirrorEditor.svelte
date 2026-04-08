@@ -69,44 +69,122 @@
   .editor-body :global(.cm-scroller) {
     overflow: auto;
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: 14px;
-    line-height: 1.8;
+    font-size: 14.5px;
+    line-height: 1.85;
   }
 
   .editor-body :global(.cm-content) {
-    padding-top: 0;
-    padding-bottom: 0;
+    padding-top: 4px;
+    padding-bottom: 40px;
     caret-color: var(--accent);
+    color: var(--text);
   }
 
   .editor-body :global(.cm-line) {
-    padding: 0 0 0 2px;
+    padding: 0 6px 0 4px;
   }
 
   .editor-body :global(.cm-gutters) {
-    padding-right: 4px !important;
-    border-right: 1px solid var(--border) !important;
-    background: var(--bg) !important;
+    padding-right: 10px !important;
+    border-right: 1px solid transparent !important;
+    background: transparent !important;
+    color: var(--text-4) !important;
   }
 
   .editor-body :global(.cm-gutterElement) {
-    color: var(--text-3) !important;
+    color: var(--text-4) !important;
+    font-size: 11px;
   }
 
   .editor-body :global(.cm-activeLineGutter) {
-    background: rgba(130, 170, 230, 0.05) !important;
+    background: transparent !important;
+    color: var(--accent) !important;
   }
 
   .editor-body :global(.cm-activeLine) {
-    background: rgba(130, 170, 230, 0.03) !important;
+    background: rgba(140, 180, 240, 0.025) !important;
   }
 
   .editor-body :global(.cm-cursor),
   .editor-body :global(.cm-cursor-primary) {
-    border-left-color: var(--accent) !important;
+    border-left: 2px solid var(--accent) !important;
+    box-shadow: 0 0 8px rgba(228, 178, 89, 0.5);
   }
 
   .editor-body :global(.cm-selectionBackground) {
-    background: rgba(192, 144, 48, 0.18) !important;
+    background: rgba(228, 178, 89, 0.18) !important;
+  }
+
+  .editor-body :global(.cm-focused .cm-selectionBackground) {
+    background: rgba(228, 178, 89, 0.22) !important;
+  }
+
+  /* Markdown syntax coloring — subtle gold for headers, dim for syntax */
+  .editor-body :global(.cm-line .tok-heading),
+  .editor-body :global(.cm-header) {
+    color: var(--accent-hi) !important;
+    font-weight: 600;
+  }
+
+  .editor-body :global(.tok-emphasis) {
+    font-style: italic;
+    color: var(--text) !important;
+  }
+
+  .editor-body :global(.tok-strong) {
+    font-weight: 600;
+    color: var(--text) !important;
+  }
+
+  .editor-body :global(.tok-link),
+  .editor-body :global(.tok-url) {
+    color: var(--accent) !important;
+  }
+
+  .editor-body :global(.tok-meta),
+  .editor-body :global(.tok-punctuation) {
+    color: var(--text-3) !important;
+  }
+
+  .editor-body :global(.cm-searchMatch) {
+    background: rgba(228, 178, 89, 0.25) !important;
+    outline: 1px solid var(--accent);
+  }
+
+  .editor-body :global(.cm-searchMatch-selected) {
+    background: rgba(228, 178, 89, 0.4) !important;
+  }
+
+  .editor-body :global(.cm-panels) {
+    background: rgba(12, 20, 36, 0.95) !important;
+    border-top: 1px solid var(--border) !important;
+    color: var(--text);
+  }
+
+  .editor-body :global(.cm-panel) {
+    background: transparent !important;
+  }
+
+  .editor-body :global(.cm-panel input) {
+    background: rgba(20, 30, 50, 0.6);
+    border: 1px solid var(--border-hi);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 4px 8px;
+  }
+
+  .editor-body :global(.cm-panel button) {
+    background: rgba(20, 30, 50, 0.6);
+    border: 1px solid var(--border-hi);
+    border-radius: 6px;
+    color: var(--text-2);
+    padding: 3px 10px;
+    margin: 0 2px;
+    cursor: pointer;
+  }
+
+  .editor-body :global(.cm-panel button:hover) {
+    background: rgba(30, 45, 72, 0.7);
+    color: var(--text);
   }
 </style>

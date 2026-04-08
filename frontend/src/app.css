@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,500;0,600;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap');
 
 * {
   box-sizing: border-box;
@@ -7,19 +7,51 @@
 }
 
 :root {
-  --bg: #080f1a;
-  --surface: #0d1624;
-  --surface-2: #121e30;
-  --surface-3: #18273c;
-  --active: #142034;
-  --border: rgba(130, 170, 230, 0.09);
-  --accent: #c09030;
-  --accent-dim: rgba(192, 144, 48, 0.12);
-  --text: #d8e4f2;
-  --text-2: #607898;
-  --text-3: #3c5272;
-  --radius: 6px;
-  --radius-sm: 4px;
+  /* ── Base surfaces ─────────────────────────────────────── */
+  --bg: #060b14;
+  --bg-deep: #030711;
+  --surface: #0b1322;
+  --surface-2: #10192b;
+  --surface-3: #172339;
+  --surface-4: #1e2c48;
+  --active: rgba(224, 176, 80, 0.08);
+
+  /* ── Borders ───────────────────────────────────────────── */
+  --border: rgba(140, 180, 240, 0.07);
+  --border-hi: rgba(140, 180, 240, 0.14);
+  --border-bright: rgba(224, 176, 80, 0.28);
+
+  /* ── Accent — warm gaslight gold ──────────────────────── */
+  --accent: #e4b259;
+  --accent-hi: #f1c774;
+  --accent-soft: rgba(224, 176, 80, 0.14);
+  --accent-softer: rgba(224, 176, 80, 0.08);
+  --accent-glow: 0 0 0 1px rgba(224, 176, 80, 0.22), 0 4px 24px -4px rgba(224, 176, 80, 0.32);
+  --accent-glow-strong: 0 0 0 1px rgba(224, 176, 80, 0.4), 0 6px 32px -6px rgba(224, 176, 80, 0.5);
+
+  /* ── Text ──────────────────────────────────────────────── */
+  --text: #e9f0ff;
+  --text-2: #8497b8;
+  --text-3: #4a5d7e;
+  --text-4: #2f3f5d;
+
+  /* ── Danger ────────────────────────────────────────────── */
+  --danger: #d47070;
+  --danger-soft: rgba(220, 90, 90, 0.1);
+
+  /* ── Shape ─────────────────────────────────────────────── */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-pill: 999px;
+
+  /* ── Motion ────────────────────────────────────────────── */
+  --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+  --dur: 0.18s;
+
+  /* ── Shadows ───────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px -6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 24px 64px -16px rgba(0, 0, 0, 0.7), 0 4px 16px -4px rgba(0, 0, 0, 0.5);
 }
 
 html,
@@ -30,67 +62,115 @@ body,
   background: var(--bg);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
   color: var(--text);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* ── Shared button — used in App.svelte and NoteEditor.svelte ── */
+body {
+  /* Ambient gradient mesh — a warm light in the upper-left and a cool
+     one in the lower-right give the dark shell depth without clutter. */
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 0%, rgba(228, 178, 89, 0.08), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 85% 100%, rgba(80, 120, 200, 0.07), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(20, 35, 60, 0.4), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(228, 178, 89, 0.25);
+  color: var(--text);
+}
+
+/* ── Shared pill button ──────────────────────────────────── */
 
 .toolbar-btn {
-  padding: 5px 14px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-pill);
+  background: rgba(20, 30, 50, 0.4);
   font-family: inherit;
   font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   color: var(--text-2);
   cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition:
-    background 0.12s,
-    border-color 0.12s,
-    color 0.12s;
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 
 .toolbar-btn:hover {
-  border-color: rgba(130, 170, 230, 0.18);
-  background: var(--surface-2);
+  border-color: rgba(140, 180, 240, 0.22);
+  background: rgba(30, 45, 72, 0.6);
   color: var(--text);
 }
 
+.toolbar-btn:active {
+  transform: translateY(1px);
+}
+
 .toolbar-btn.primary {
-  border-color: rgba(192, 144, 48, 0.28);
-  background: var(--accent-dim);
-  color: var(--accent);
+  border-color: rgba(228, 178, 89, 0.38);
+  background: linear-gradient(180deg, rgba(228, 178, 89, 0.2), rgba(200, 150, 60, 0.12));
+  color: var(--accent-hi);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 150, 0.15),
+    0 2px 14px -4px rgba(228, 178, 89, 0.3);
 }
 
 .toolbar-btn.primary:hover {
-  background: rgba(192, 144, 48, 0.18);
+  border-color: rgba(228, 178, 89, 0.55);
+  background: linear-gradient(180deg, rgba(240, 190, 100, 0.28), rgba(210, 160, 70, 0.18));
+  color: #ffe3a8;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 150, 0.2),
+    0 4px 22px -4px rgba(228, 178, 89, 0.48);
 }
 
 .toolbar-btn--error {
-  border-color: rgba(220, 80, 80, 0.25);
-  background: rgba(220, 80, 80, 0.08);
-  color: #cc7070;
+  border-color: rgba(212, 112, 112, 0.3);
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .toolbar-btn--error:hover {
-  background: rgba(220, 80, 80, 0.14);
+  background: rgba(220, 90, 90, 0.18);
+  color: #e28989;
 }
 
 /* ── Scrollbars ──────────────────────────────────────────── */
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 2px;
-  background: var(--surface-3);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+  background-color: rgba(140, 180, 240, 0.08);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-3);
+  background-color: rgba(140, 180, 240, 0.18);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 180, 240, 0.12) transparent;
 }

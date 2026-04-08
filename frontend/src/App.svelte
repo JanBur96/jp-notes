@@ -52,6 +52,8 @@
 <svelte:window onkeydown={onKeydown} />
 
 <div class="app-shell">
+  <div class="ambient-mesh" aria-hidden="true"></div>
+
   <CreateFolderModal />
   <ConfirmDeleteNoteModal />
 
@@ -75,13 +77,41 @@
 
 <style>
   .app-shell {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background: var(--bg);
+    isolation: isolate;
+  }
+
+  /* Soft gold + violet lights drifting across the shell. They sit below
+     every pane (z-index 0) while panels layer above at z-index 1+. */
+  .ambient-mesh {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 60% 40% at 12% 8%,
+        rgba(228, 178, 89, 0.14),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 50% 35% at 88% 92%,
+        rgba(90, 130, 220, 0.09),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 40% 30% at 50% 50%,
+        rgba(30, 50, 85, 0.3),
+        transparent 70%
+      );
   }
 
   .app-body {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex: 1;
     overflow: hidden;

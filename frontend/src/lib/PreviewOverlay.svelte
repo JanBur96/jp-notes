@@ -18,9 +18,11 @@
 >
   <div class="preview-overlay-header">
     <span class="preview-overlay-title">{title || 'Untitled'}</span>
-    <button class="preview-close" onclick={onClose} aria-label="Close preview"
-      >✕</button
-    >
+    <button class="preview-close" onclick={onClose} aria-label="Close preview">
+      <svg viewBox="0 0 14 14" width="14" height="14" fill="none">
+        <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
   <div class="preview-overlay-body">
     <MarkdownView {html} />
@@ -37,14 +39,16 @@
     align-items: center;
     overflow-y: auto;
     padding: 0 24px 80px;
-    background: var(--bg);
-    animation: previewFadeIn 0.15s ease;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 0%, rgba(228, 178, 89, 0.08), transparent 60%),
+      var(--bg);
+    animation: previewFadeIn 0.2s var(--ease);
   }
 
   @keyframes previewFadeIn {
     from {
       opacity: 0;
-      transform: translateY(6px);
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
@@ -60,16 +64,17 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 740px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
+    max-width: 760px;
+    padding: 18px 0;
+    background: linear-gradient(180deg, var(--bg) 80%, transparent);
   }
 
   .preview-overlay-title {
     overflow: hidden;
-    font-size: 13px;
-    font-weight: 600;
+    font-family: 'Lora', Georgia, serif;
+    font-style: italic;
+    font-size: 14px;
+    font-weight: 500;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: var(--text-2);
@@ -80,31 +85,31 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     margin-left: 16px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: transparent;
-    font-family: inherit;
-    font-size: 14px;
+    border: 1px solid var(--border-hi);
+    border-radius: 8px;
+    background: rgba(20, 30, 50, 0.5);
     color: var(--text-2);
     cursor: pointer;
     transition:
-      background 0.12s,
-      color 0.12s;
+      background var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
   }
 
   .preview-close:hover {
-    background: var(--surface-2);
+    background: rgba(30, 45, 72, 0.7);
+    border-color: rgba(140, 180, 240, 0.24);
     color: var(--text);
   }
 
   .preview-overlay-body {
     width: 100%;
-    max-width: 740px;
-    padding: 36px 0;
-    font-size: 15px;
+    max-width: 760px;
+    padding: 40px 0 60px;
+    font-size: 15.5px;
     line-height: 1.85;
     color: var(--text);
   }

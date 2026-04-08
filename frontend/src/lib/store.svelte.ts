@@ -272,9 +272,12 @@ export function summarizeNote(id: string) {
     .then((res) => {
       store.aiSummary = res.summary;
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       console.error('Failed to summarize note:', error);
-      store.hasError = 'Failed to summarize note';
+      // Surface the server's message when it's an ApiError (e.g. "AI
+      // service timed out", "AI service unavailable"). Fall back to a
+      // generic message for unknown failures like a dropped connection.
+      store.hasError = error.message || 'Failed to summarize note';
     })
     .finally(() => {
       store.aiLoading = false;

@@ -16,16 +16,31 @@
 
 {#if store.modal?.kind === 'confirm-delete-note'}
   <Modal title="Delete note">
-    <p>Are you sure you want to delete this note?</p>
-    <button class="modal-button toolbar-btn primary" onclick={confirm}>
-      Delete
-    </button>
-    <button class="modal-button toolbar-btn" onclick={cancel}>Cancel</button>
+    <p class="modal-text">
+      This note will be removed permanently. This action cannot be undone.
+    </p>
+    <div class="modal-actions">
+      <button class="toolbar-btn" onclick={cancel}>Cancel</button>
+      <button class="toolbar-btn toolbar-btn--error" onclick={confirm}>
+        Delete
+      </button>
+    </div>
   </Modal>
 {/if}
 
 <style>
-  .modal-button {
-    margin-top: 14px;
+  .modal-text {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--text-2);
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 22px;
   }
 </style>

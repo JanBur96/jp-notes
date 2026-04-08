@@ -3,7 +3,13 @@
 </script>
 
 {#if store.hasError}
-  <div class="toolbar-error">
+  <div class="toolbar-error" role="alert">
+    <span class="error-icon" aria-hidden="true">
+      <svg viewBox="0 0 14 14" width="14" height="14" fill="none">
+        <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M7 4v3.5M7 9.8v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </span>
     <span class="error-message">{store.hasError}</span>
     <button
       class="toolbar-btn toolbar-btn--error"
@@ -14,15 +20,37 @@
 
 <style>
   .toolbar-error {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
-    margin: 6px;
+    margin: 8px 16px 0;
     padding: 10px 14px;
-    border: 1px solid rgba(200, 60, 60, 0.22);
+    border: 1px solid rgba(212, 112, 112, 0.26);
     border-radius: var(--radius);
-    background: rgba(200, 60, 60, 0.07);
+    background:
+      linear-gradient(180deg, rgba(50, 18, 18, 0.5), rgba(30, 10, 10, 0.3));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 18px -6px rgba(220, 80, 80, 0.3);
     font-size: 13px;
+    color: var(--text);
+    animation: errorIn 0.18s var(--ease);
+  }
+
+  @keyframes errorIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .error-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    color: var(--danger);
+  }
+
+  .error-message {
+    flex: 1;
   }
 </style>

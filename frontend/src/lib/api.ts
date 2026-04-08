@@ -27,12 +27,33 @@ export interface Tag {
   _count?: { notes: number };
 }
 
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
     ...options,
   });
-  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  if (!res.ok) {
+    // Try to pull a server-provided error message out of the body — the
+    // backend returns `{ error: "..." }` on failure.
+    let message = `API error: ${res.status}`;
+    try {
+      const body = await res.json();
+      if (body?.error) message = body.error;
+    } catch {
+      /* body wasn't JSON; keep the status-based message */
+    }
+    throw new ApiError(res.status, message);
+  }
   if (res.status === 204) return undefined as T;
   return res.json();
 }
