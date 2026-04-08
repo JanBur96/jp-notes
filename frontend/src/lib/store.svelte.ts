@@ -6,6 +6,11 @@ type ModalState =
   | { kind: 'create-folder'; name: string }
   | { kind: 'confirm-delete-note' };
 
+type DraggingItem =
+  | null
+  | { kind: 'note'; id: string }
+  | { kind: 'folder'; id: string };
+
 export const store = $state({
   notes: [] as Note[],
   folders: [] as Folder[],
@@ -19,7 +24,77 @@ export const store = $state({
   archivedNotes: [] as Note[],
   aiLoading: false,
   aiSummary: '' as string,
+  draggingItem: null as DraggingItem,
 });
+
+function isDescendant(
+  folders: Folder[],
+  ancestorId: string,
+  candidateId: string
+): boolean {
+  let current = folders.find((f) => f.id === candidateId);
+  while (current?.parentId) {
+    if (current.parentId === ancestorId) return true;
+    current = folders.find((f) => f.id === current!.parentId);
+  }
+  return false;
+}
+
+export async function moveFolderToParent(
+  folderId: string,
+  parentId: string | null
+) {
+  const idx = store.folders.findIndex((f) => f.id === folderId);
+  if (idx === -1) return;
+  const prev = { ...store.folders[idx] };
+  if ((prev.parentId ?? null) === parentId) return;
+  if (parentId === folderId) return;
+  if (parentId && isDescendant(store.folders, folderId, parentId)) {
+    store.hasError = 'Cannot move folder into its own descendant';
+    return;
+  }
+
+  store.folders[idx].parentId = parentId;
+
+  try {
+    await api.folders.update(folderId, { parentId });
+  } catch (error) {
+    console.error('Failed to move folder:', error);
+    Object.assign(store.folders[idx], prev);
+    store.hasError = 'Failed to move folder';
+  }
+}
+
+export async function moveNoteToFolder(
+  noteId: string,
+  folderId: string | null
+) {
+  const idx = store.notes.findIndex((n) => n.id === noteId);
+  if (idx === -1) return;
+  const prev = { ...store.notes[idx] };
+  if ((prev.folderId ?? null) === folderId) return;
+
+  const targetFolder = folderId
+    ? (store.folders.find((f) => f.id === folderId) ?? null)
+    : null;
+
+  store.notes[idx].folderId = folderId;
+  store.notes[idx].folder = targetFolder;
+
+  if (store.activeFolderId !== null && store.activeFolderId !== folderId) {
+    store.notes = store.notes.filter((n) => n.id !== noteId);
+  }
+
+  try {
+    await api.notes.update(noteId, { folderId });
+  } catch (error) {
+    console.error('Failed to move note:', error);
+    const stillThere = store.notes.findIndex((n) => n.id === noteId);
+    if (stillThere === -1) store.notes.push(prev);
+    else Object.assign(store.notes[stillThere], prev);
+    store.hasError = 'Failed to move note';
+  }
+}
 
 export async function loadNotes(folderId?: string | null) {
   const expected = folderId ?? null;

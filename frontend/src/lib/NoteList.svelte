@@ -35,7 +35,25 @@
   </div>
   <ul class="note-list">
     {#each displayedNotes as note (note.id)}
-      <li class="note-item" class:active={note.id === store.activeNoteId}>
+      <li
+        class="note-item"
+        class:active={note.id === store.activeNoteId}
+        class:dragging={store.draggingItem?.kind === 'note' &&
+          store.draggingItem.id === note.id}
+        draggable={!store.archiveMode}
+        ondragstart={(e) => {
+          if (store.archiveMode) {
+            e.preventDefault();
+            return;
+          }
+          store.draggingItem = { kind: 'note', id: note.id };
+          e.dataTransfer?.setData('text/plain', note.id);
+          if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+        }}
+        ondragend={() => {
+          store.draggingItem = null;
+        }}
+      >
         <button
           type="button"
           class="note-item-btn"
@@ -90,6 +108,10 @@
   .note-item.active {
     border-left-color: var(--accent);
     background: var(--accent-dim);
+  }
+
+  .note-item.dragging {
+    opacity: 0.5;
   }
 
   .note-item-btn {

@@ -1,6 +1,44 @@
 <script lang="ts">
   import FolderTree from './FolderTree.svelte';
-  import { store } from './store.svelte';
+  import {
+    store,
+    moveNoteToFolder,
+    moveFolderToParent,
+  } from './store.svelte';
+
+  let allNotesDragOver = $state(false);
+
+  async function handleDropNote(folderId: string | null) {
+    const id =
+      store.draggingItem?.kind === 'note' ? store.draggingItem.id : null;
+    store.draggingItem = null;
+    if (!id || store.archiveMode) return;
+    await moveNoteToFolder(id, folderId);
+  }
+
+  async function handleDropFolder(parentId: string | null) {
+    const id =
+      store.draggingItem?.kind === 'folder' ? store.draggingItem.id : null;
+    store.draggingItem = null;
+    if (!id) return;
+    await moveFolderToParent(id, parentId);
+  }
+
+  function handleAllNotesDragOver(e: DragEvent) {
+    if (!store.draggingItem) return;
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+    allNotesDragOver = true;
+  }
+
+  function handleAllNotesDrop(e: DragEvent) {
+    e.preventDefault();
+    allNotesDragOver = false;
+    const item = store.draggingItem;
+    if (!item) return;
+    if (item.kind === 'note') handleDropNote(null);
+    else handleDropFolder(null);
+  }
 
   function selectFolder(id: string) {
     store.activeFolderId = id;
@@ -34,7 +72,11 @@
       <span
         class:active={store.activeFolderId === null &&
           store.archiveMode === false}
+        class:drop-target={allNotesDragOver}
         onclick={selectAllNotes}
+        ondragover={handleAllNotesDragOver}
+        ondragleave={() => (allNotesDragOver = false)}
+        ondrop={handleAllNotesDrop}
       >
         All Notes
       </span>
@@ -46,6 +88,8 @@
           parentId={null}
           activeFolderId={store.activeFolderId}
           onSelect={selectFolder}
+          onDropNote={handleDropNote}
+          onDropFolder={handleDropFolder}
         />
       </ul>
     </li>
@@ -193,6 +237,21 @@
     border-left-color: var(--accent);
     background: var(--accent-dim);
     color: var(--text);
+  }
+
+  .folder-tree li > span.drop-target,
+  .folder-tree :global(button.drop-target),
+  .folder-tree :global(summary.drop-target) {
+    border-left-color: var(--accent);
+    background: rgba(192, 144, 48, 0.18);
+    color: var(--text);
+    outline: 1px dashed var(--accent);
+    outline-offset: -2px;
+  }
+
+  .folder-tree :global(button.dragging),
+  .folder-tree :global(summary.dragging) {
+    opacity: 0.5;
   }
 
   /* ── Responsive ────────────────────────────────────────── */

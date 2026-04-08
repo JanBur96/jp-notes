@@ -43,7 +43,12 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     const { name, parentId } = req.body;
     const data: any = {};
     if (name) data.name = name;
-    if (parentId) data.parentId = parentId;
+    if ("parentId" in req.body) {
+      if (parentId === req.params.id) {
+        return res.status(400).json({ error: "Folder cannot be its own parent" });
+      }
+      data.parentId = parentId ?? null;
+    }
 
     const folder = await prisma.folder.update({ where: { id: req.params.id }, data });
     res.json(folder);

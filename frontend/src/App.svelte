@@ -133,6 +133,16 @@
     return activeNote ? new Date(activeNote.updatedAt).toLocaleString() : null;
   }
 
+  function getWordCount() {
+    const notes = store.archiveMode ? store.archivedNotes : store.notes;
+    const activeNote = notes.find((n) => n.id === store.activeNoteId);
+    if (!activeNote) return 0;
+    return activeNote.content
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0).length;
+  }
+
   function activateHotKeys(e: KeyboardEvent) {
     if (e.code === 'KeyN' && e.altKey && e.ctrlKey) {
       e.preventDefault();
@@ -270,6 +280,8 @@
     >
     <span>·</span>
     <span>Updated: {getLastUpdatedAt() ?? 'No Note Selected'}</span>
+    <span>·</span>
+    <span>Words: {getWordCount() ?? 0}</span>
   </div>
 </div>
 
