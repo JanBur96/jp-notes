@@ -58,16 +58,36 @@ export async function loadArchivedNotes() {
 export async function saveNote(
   id: string,
   data: { title?: string; content?: string }
-) {
-  const idx = store.notes.findIndex((n) => n.id === id);
-  const prev = idx !== -1 ? { ...store.notes[idx] } : null;
+): Promise<boolean> {
+  const idx = store.archiveMode
+    ? store.archivedNotes.findIndex((n) => n.id === id)
+    : store.notes.findIndex((n) => n.id === id);
+
+  const prev = store.archiveMode
+    ? idx !== -1
+      ? { ...store.archivedNotes[idx] }
+      : null
+    : idx !== -1
+      ? { ...store.notes[idx] }
+      : null;
+
   try {
-    if (idx !== -1) Object.assign(store.notes[idx], data);
+    if (idx !== -1)
+      Object.assign(
+        store.archiveMode ? store.archivedNotes[idx] : store.notes[idx],
+        data
+      );
     await api.notes.update(id, data);
+    return true;
   } catch (error) {
     console.error('Failed to save note:', error);
-    if (prev && idx !== -1) Object.assign(store.notes[idx], prev);
+    if (prev && idx !== -1)
+      Object.assign(
+        store.archiveMode ? store.archivedNotes[idx] : store.notes[idx],
+        prev
+      );
     store.hasError = 'Failed to save note';
+    return false;
   }
 }
 

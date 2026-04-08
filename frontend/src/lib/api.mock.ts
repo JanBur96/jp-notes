@@ -271,6 +271,24 @@ export const mockApi = {
     },
   },
 
+  ai: {
+    summarize: async (noteId: string) => {
+      await new Promise((r) => setTimeout(r, 600));
+      const { notes } = load();
+      const note = notes.find((n) => n.id === noteId);
+      if (!note) throw new Error(`Note not found: ${noteId}`);
+      const wordCount = note.content.split(/\s+/).filter(Boolean).length;
+      const firstLine =
+        note.content
+          .split('\n')
+          .map((l) => l.replace(/^[#>\-*\s]+/, '').trim())
+          .find(Boolean) ?? '';
+      return {
+        summary: `Demo mode summary — "${note.title || 'Untitled'}" (~${wordCount} words). Opens with: ${firstLine.slice(0, 120)}${firstLine.length > 120 ? '…' : ''} In production, a local LLM (Ollama) generates a real summary instead of this stub.`,
+      };
+    },
+  },
+
   folders: {
     list: async () => load().folders,
 
