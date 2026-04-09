@@ -43,10 +43,6 @@
   }
 
   function selectResult(note: Note) {
-    // Make sure the note is visible in the current list before activating it
-    if (!store.notes.find((n) => n.id === note.id)) {
-      store.notes = [...store.notes, note];
-    }
     if (store.activeFolderId !== note.folderId) {
       store.activeFolderId = note.folderId;
     }
@@ -88,9 +84,21 @@
 <svelte:window onclick={onWindowClick} />
 
 <div class="toolbar-search">
-  <svg class="search-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true">
-    <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/>
-    <path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+  <svg
+    class="search-icon"
+    viewBox="0 0 16 16"
+    width="13"
+    height="13"
+    fill="none"
+    aria-hidden="true"
+  >
+    <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4" />
+    <path
+      d="M10.5 10.5l3 3"
+      stroke="currentColor"
+      stroke-width="1.4"
+      stroke-linecap="round"
+    />
   </svg>
   <input
     bind:this={inputEl}
@@ -214,8 +222,11 @@
     padding: 6px;
     border: 1px solid rgba(140, 180, 240, 0.16);
     border-radius: 12px;
-    background:
-      linear-gradient(180deg, rgba(22, 32, 52, 0.96), rgba(12, 20, 36, 0.96));
+    background: linear-gradient(
+      180deg,
+      rgba(22, 32, 52, 0.96),
+      rgba(12, 20, 36, 0.96)
+    );
     backdrop-filter: blur(20px) saturate(140%);
     -webkit-backdrop-filter: blur(20px) saturate(140%);
     box-shadow:
@@ -226,8 +237,14 @@
   }
 
   @keyframes dropdownIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .search-result-btn {

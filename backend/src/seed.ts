@@ -5,7 +5,6 @@ async function main() {
 
   // Clear existing data
   await prisma.note.deleteMany();
-  await prisma.tag.deleteMany();
   await prisma.folder.deleteMany();
 
   // Folders
@@ -14,12 +13,6 @@ async function main() {
   const devNotes = await prisma.folder.create({
     data: { name: "Dev Notes", parentId: work.id },
   });
-
-  // Tags
-  const tags = ["typescript", "ideas", "todo", "reference", "meeting"];
-  for (const name of tags) {
-    await prisma.tag.create({ data: { name } });
-  }
 
   // Notes
   await prisma.note.create({
@@ -44,9 +37,6 @@ npx prisma init
 `,
       pinned: true,
       folderId: devNotes.id,
-      tags: {
-        connect: [{ name: "typescript" }, { name: "reference" }],
-      },
       archived: true,
     },
   });
@@ -62,9 +52,6 @@ npx prisma init
 - Recipe manager with ingredient tracking
 `,
       folderId: personal.id,
-      tags: {
-        connect: [{ name: "ideas" }],
-      },
     },
   });
 
@@ -86,9 +73,6 @@ npx prisma init
 - [ ] Review open PRs
 `,
       folderId: work.id,
-      tags: {
-        connect: [{ name: "meeting" }, { name: "todo" }],
-      },
     },
   });
 
@@ -115,9 +99,6 @@ const config = {
 \`\`\`
 `,
       folderId: devNotes.id,
-      tags: {
-        connect: [{ name: "typescript" }, { name: "reference" }],
-      },
     },
   });
 
@@ -132,9 +113,6 @@ const config = {
 - [ ] Read chapter 4
 `,
       folderId: personal.id,
-      tags: {
-        connect: [{ name: "todo" }],
-      },
     },
   });
 

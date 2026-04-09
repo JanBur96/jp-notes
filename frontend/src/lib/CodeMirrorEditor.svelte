@@ -4,17 +4,7 @@
   import { EditorState } from '@codemirror/state';
 
   interface Props {
-    /**
-     * Identity of the current document. When this changes, the view is
-     * torn down and rebuilt from `initialContent`. Passing `null` means
-     * no document is active and the editor should render as empty.
-     */
     noteId: string | null;
-    /**
-     * Seed text used when a new view is created. Subsequent updates from
-     * within the editor are reported via `onChange`; we do not push external
-     * changes back in after construction.
-     */
     initialContent: string;
     onChange: (content: string) => void;
   }
@@ -30,10 +20,7 @@
     }
   });
 
-  // Recreate the view whenever the active note changes. Using `noteId` as
-  // the dependency means edits don't trigger rebuilds — only navigation.
-  // The cleanup runs before the next effect AND on unmount, so the old
-  // view is always torn down before a new one is attached.
+  // Rebuild the view only when noteId changes, not on every keystroke.
   $effect(() => {
     if (noteId === null) {
       view = null;
@@ -119,7 +106,6 @@
     background: rgba(228, 178, 89, 0.22) !important;
   }
 
-  /* Markdown syntax coloring — subtle gold for headers, dim for syntax */
   .editor-body :global(.cm-line .tok-heading),
   .editor-body :global(.cm-header) {
     color: var(--accent-hi) !important;

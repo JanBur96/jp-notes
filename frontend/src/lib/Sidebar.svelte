@@ -169,8 +169,6 @@
     box-shadow: 0 0 8px rgba(228, 178, 89, 0.5);
   }
 
-  /* ── Folder tree ───────────────────────────────────────── */
-
   .folder-tree {
     list-style: none;
     padding: 0 10px 12px;
@@ -211,7 +209,6 @@
     color: var(--text);
   }
 
-  /* Gold ambient glow on active — the signature "gaslight" effect */
   .nav-entry.active,
   .folder-tree :global(button.active),
   .folder-tree :global(summary.active) {
@@ -255,7 +252,6 @@
     color: var(--accent);
   }
 
-  /* Disclosure caret on parent folder summaries */
   .folder-tree :global(details > summary) {
     list-style: none;
   }
@@ -291,7 +287,6 @@
     margin-top: 2px;
   }
 
-  /* Drop target highlight — dashed gold outline shows drop zone */
   .nav-entry.drop-target,
   .folder-tree :global(button.drop-target),
   .folder-tree :global(summary.drop-target) {
@@ -307,8 +302,6 @@
   .folder-tree :global(summary.dragging) {
     opacity: 0.5;
   }
-
-  /* ── Responsive ────────────────────────────────────────── */
 
   @media (max-width: 860px) {
     .pane-sidebar { width: 200px; min-width: 200px; }

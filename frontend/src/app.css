@@ -7,7 +7,6 @@
 }
 
 :root {
-  /* ── Base surfaces ─────────────────────────────────────── */
   --bg: #060b14;
   --bg-deep: #030711;
   --surface: #0b1322;
@@ -16,42 +15,38 @@
   --surface-4: #1e2c48;
   --active: rgba(224, 176, 80, 0.08);
 
-  /* ── Borders ───────────────────────────────────────────── */
   --border: rgba(140, 180, 240, 0.07);
   --border-hi: rgba(140, 180, 240, 0.14);
   --border-bright: rgba(224, 176, 80, 0.28);
 
-  /* ── Accent — warm gaslight gold ──────────────────────── */
   --accent: #e4b259;
   --accent-hi: #f1c774;
   --accent-soft: rgba(224, 176, 80, 0.14);
   --accent-softer: rgba(224, 176, 80, 0.08);
-  --accent-glow: 0 0 0 1px rgba(224, 176, 80, 0.22), 0 4px 24px -4px rgba(224, 176, 80, 0.32);
-  --accent-glow-strong: 0 0 0 1px rgba(224, 176, 80, 0.4), 0 6px 32px -6px rgba(224, 176, 80, 0.5);
+  --accent-glow:
+    0 0 0 1px rgba(224, 176, 80, 0.22), 0 4px 24px -4px rgba(224, 176, 80, 0.32);
+  --accent-glow-strong:
+    0 0 0 1px rgba(224, 176, 80, 0.4), 0 6px 32px -6px rgba(224, 176, 80, 0.5);
 
-  /* ── Text ──────────────────────────────────────────────── */
   --text: #e9f0ff;
   --text-2: #8497b8;
   --text-3: #4a5d7e;
   --text-4: #2f3f5d;
 
-  /* ── Danger ────────────────────────────────────────────── */
   --danger: #d47070;
   --danger-soft: rgba(220, 90, 90, 0.1);
 
-  /* ── Shape ─────────────────────────────────────────────── */
   --radius: 10px;
   --radius-sm: 6px;
   --radius-pill: 999px;
 
-  /* ── Motion ────────────────────────────────────────────── */
   --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
   --dur: 0.18s;
 
-  /* ── Shadows ───────────────────────────────────────────── */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 24px -6px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 24px 64px -16px rgba(0, 0, 0, 0.7), 0 4px 16px -4px rgba(0, 0, 0, 0.5);
+  --shadow-lg:
+    0 24px 64px -16px rgba(0, 0, 0, 0.7), 0 4px 16px -4px rgba(0, 0, 0, 0.5);
 }
 
 html,
@@ -70,12 +65,22 @@ body,
 }
 
 body {
-  /* Ambient gradient mesh — a warm light in the upper-left and a cool
-     one in the lower-right give the dark shell depth without clutter. */
   background:
-    radial-gradient(ellipse 80% 60% at 15% 0%, rgba(228, 178, 89, 0.08), transparent 60%),
-    radial-gradient(ellipse 70% 50% at 85% 100%, rgba(80, 120, 200, 0.07), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(20, 35, 60, 0.4), transparent 70%),
+    radial-gradient(
+      ellipse 80% 60% at 15% 0%,
+      rgba(228, 178, 89, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 85% 100%,
+      rgba(80, 120, 200, 0.07),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 50% 50%,
+      rgba(20, 35, 60, 0.4),
+      transparent 70%
+    ),
     var(--bg);
   background-attachment: fixed;
 }
@@ -84,8 +89,6 @@ body {
   background: rgba(228, 178, 89, 0.25);
   color: var(--text);
 }
-
-/* ── Shared pill button ──────────────────────────────────── */
 
 .toolbar-btn {
   display: inline-flex;
@@ -124,7 +127,11 @@ body {
 
 .toolbar-btn.primary {
   border-color: rgba(228, 178, 89, 0.38);
-  background: linear-gradient(180deg, rgba(228, 178, 89, 0.2), rgba(200, 150, 60, 0.12));
+  background: linear-gradient(
+    180deg,
+    rgba(228, 178, 89, 0.2),
+    rgba(200, 150, 60, 0.12)
+  );
   color: var(--accent-hi);
   box-shadow:
     inset 0 1px 0 rgba(255, 220, 150, 0.15),
@@ -133,7 +140,11 @@ body {
 
 .toolbar-btn.primary:hover {
   border-color: rgba(228, 178, 89, 0.55);
-  background: linear-gradient(180deg, rgba(240, 190, 100, 0.28), rgba(210, 160, 70, 0.18));
+  background: linear-gradient(
+    180deg,
+    rgba(240, 190, 100, 0.28),
+    rgba(210, 160, 70, 0.18)
+  );
   color: #ffe3a8;
   box-shadow:
     inset 0 1px 0 rgba(255, 220, 150, 0.2),
@@ -150,8 +161,6 @@ body {
   background: rgba(220, 90, 90, 0.18);
   color: #e28989;
 }
-
-/* ── Scrollbars ──────────────────────────────────────────── */
 
 ::-webkit-scrollbar {
   width: 8px;

@@ -3,7 +3,6 @@
 
   let showSummary = $state(false);
 
-  // Auto-open the panel once a new summary finishes generating
   $effect(() => {
     if (store.aiSummary && !store.aiLoading) {
       showSummary = true;

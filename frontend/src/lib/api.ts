@@ -9,7 +9,6 @@ export interface Note {
   pinned: boolean;
   folderId: string | null;
   folder: Folder | null;
-  tags: Tag[];
   createdAt: string;
   updatedAt: string;
   archived: boolean;
@@ -19,12 +18,6 @@ export interface Folder {
   id: string;
   name: string;
   parentId: string | null;
-}
-
-export interface Tag {
-  id: string;
-  name: string;
-  _count?: { notes: number };
 }
 
 export class ApiError extends Error {
@@ -43,15 +36,11 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     ...options,
   });
   if (!res.ok) {
-    // Try to pull a server-provided error message out of the body — the
-    // backend returns `{ error: "..." }` on failure.
     let message = `API error: ${res.status}`;
     try {
       const body = await res.json();
       if (body?.error) message = body.error;
-    } catch {
-      /* body wasn't JSON; keep the status-based message */
-    }
+    } catch {}
     throw new ApiError(res.status, message);
   }
   if (res.status === 204) return undefined as T;

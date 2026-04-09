@@ -2,16 +2,6 @@ import type { Note, Folder } from './api';
 import { api } from './api';
 import { isDescendant } from './folderUtils';
 
-/**
- * Single global store for the whole app. All UI state lives here so any
- * component can read or mutate it without prop drilling. Functions exported
- * below are the "actions" — they coordinate the store and the HTTP API.
- *
- * Convention: mutations update the store immediately (optimistic) and roll
- * back on API failure. That keeps the UI feeling instant while still
- * surfacing errors through `hasError`.
- */
-
 type ModalState =
   | null
   | { kind: 'create-folder'; name: string }
@@ -40,14 +30,10 @@ export const store = $state({
   aiSummary: '' as string,
 });
 
-// ── Loaders ─────────────────────────────────────────────────────────────────
-
 export async function loadNotes(folderId?: string | null) {
   const expected = folderId ?? null;
   try {
     const notes = await api.notes.list({ folderId });
-    // Guard against race: the user may have navigated away before the
-    // request returned — only write if the filter still matches.
     if (store.activeFolderId === expected && !store.archiveMode) {
       store.notes = notes;
     }
@@ -77,8 +63,6 @@ export async function loadArchivedNotes() {
     store.hasError = 'Failed to load archived notes';
   }
 }
-
-// ── Notes: create / save / archive / delete ────────────────────────────────
 
 export async function createNote(folderId?: string) {
   try {
@@ -150,11 +134,6 @@ export async function unarchiveNote(id: string) {
   }
 }
 
-/**
- * "Delete" an active note archives it. Deleting an already-archived note
- * removes it for good. This is the Gmail-style two-step delete — it prevents
- * accidental loss.
- */
 export async function deleteNote(id: string) {
   const note =
     store.notes.find((n) => n.id === id) ??
@@ -175,8 +154,6 @@ export async function deleteNote(id: string) {
     await archiveNote(id);
   }
 }
-
-// ── Folders: create / move ─────────────────────────────────────────────────
 
 export async function createFolder(name: string, parentId?: string | null) {
   try {
@@ -201,7 +178,6 @@ export async function moveFolderToParent(
   if (idx === -1) return;
   const prev = { ...store.folders[idx] };
 
-  // Reject no-ops, self-parenting, and cycles before hitting the network
   if ((prev.parentId ?? null) === parentId) return;
   if (parentId === folderId) return;
   if (parentId && isDescendant(store.folders, folderId, parentId)) {
@@ -236,13 +212,9 @@ export async function moveNoteToFolder(
   store.notes[idx].folderId = folderId;
   store.notes[idx].folder = targetFolder;
 
-  // Track if the note was filtered out for rollback
   const wasFiltered =
     store.activeFolderId !== null && store.activeFolderId !== folderId;
 
-  // If we're viewing a specific folder and the note no longer belongs
-  // there, drop it from the visible list to match what the server would
-  // return on a fresh fetch.
   if (wasFiltered) {
     store.notes = store.notes.filter((n) => n.id !== noteId);
   }
@@ -262,8 +234,6 @@ export async function moveNoteToFolder(
   }
 }
 
-// ── AI ──────────────────────────────────────────────────────────────────────
-
 export function summarizeNote(id: string) {
   store.aiLoading = true;
   store.aiSummary = '';
@@ -274,9 +244,6 @@ export function summarizeNote(id: string) {
     })
     .catch((error: Error) => {
       console.error('Failed to summarize note:', error);
-      // Surface the server's message when it's an ApiError (e.g. "AI
-      // service timed out", "AI service unavailable"). Fall back to a
-      // generic message for unknown failures like a dropped connection.
       store.hasError = error.message || 'Failed to summarize note';
     })
     .finally(() => {

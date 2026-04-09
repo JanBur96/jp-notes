@@ -1,10 +1,5 @@
 import type { Folder } from './api';
 
-/**
- * Walks up the parent chain of `candidateId` and returns true if `ancestorId`
- * is reached. Used to reject drag-and-drop moves that would create a cycle
- * (e.g. dropping a folder into its own child).
- */
 export function isDescendant(
   folders: Folder[],
   ancestorId: string,

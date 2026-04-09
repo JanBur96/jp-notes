@@ -1,7 +1,5 @@
 import type { Note, Folder } from './api';
 
-// ── Seed data ──────────────────────────────────────────────
-
 const SEED_FOLDERS: Folder[] = [
   { id: 'f1', name: 'Work', parentId: null },
   { id: 'f2', name: 'Meetings', parentId: 'f1' },
@@ -17,12 +15,11 @@ const devNotes = SEED_FOLDERS[3];
 const SEED_NOTES: Note[] = [
   {
     id: 'n1',
-    title: 'Q2 Kickoff — Meeting Notes',
+    title: 'Q2 Kickoff - Meeting Notes',
     folderId: meetings.id,
     folder: meetings,
     pinned: false,
     archived: false,
-    tags: [],
     createdAt: '2026-04-04T10:30:00Z',
     updatedAt: '2026-04-04T10:30:00Z',
     content: `## Attendees
@@ -58,7 +55,6 @@ Jan, Sarah, Mike, Product
     folder: work,
     pinned: true,
     archived: false,
-    tags: [],
     createdAt: '2026-03-28T14:15:00Z',
     updatedAt: '2026-03-28T14:15:00Z',
     content: `## Active Ideas
@@ -87,7 +83,6 @@ Jan, Sarah, Mike, Product
     folder: personal,
     pinned: false,
     archived: false,
-    tags: [],
     createdAt: '2026-04-05T08:00:00Z',
     updatedAt: '2026-04-05T08:00:00Z',
     content: `## Produce
@@ -115,19 +110,18 @@ Jan, Sarah, Mike, Product
     folder: devNotes,
     pinned: false,
     archived: false,
-    tags: [],
     createdAt: '2026-03-20T19:45:00Z',
     updatedAt: '2026-03-20T19:45:00Z',
     content: `## Core Runes
 
 ### \`$state\`
-Reactive state — replaces \`let\` with stores.
+Reactive state - replaces \`let\` with stores.
 \`\`\`svelte
 let count = $state(0);
 \`\`\`
 
 ### \`$derived\`
-Computed values — replaces \`$:\` reactive declarations.
+Computed values - replaces \`$:\` reactive declarations.
 \`\`\`svelte
 const double = $derived(count * 2);
 \`\`\`
@@ -142,7 +136,7 @@ $effect(() => {
 \`\`\`
 
 ### \`$props\`
-Component props — replaces \`export let\`.
+Component props - replaces \`export let\`.
 \`\`\`svelte
 let { name, age = 0 } = $props();
 \`\`\`
@@ -160,21 +154,18 @@ let { name, age = 0 } = $props();
     folder: null,
     pinned: false,
     archived: false,
-    tags: [],
     createdAt: '2026-04-05T09:30:00Z',
     updatedAt: '2026-04-05T09:30:00Z',
     content: `Random things to sort later:
 
 - Look into Cloudflare Workers for the backend
 - Check if \`marked\` handles GFM tables correctly in preview
-- Sidebar feels narrow on 1280px screens — maybe 240px?
+- Sidebar feels narrow on 1280px screens, maybe 240px?
 - Consider a "focus mode" that hides the sidebar and note list
 - Add word count to the status bar (cheap win)
 `,
   },
 ];
-
-// ── Persistence ────────────────────────────────────────────
 
 const STORAGE_KEY = 'jp-notes-demo';
 
@@ -185,7 +176,6 @@ function load(): DemoState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as DemoState;
   } catch {
-    // ignore parse errors
   }
   return { notes: SEED_NOTES, folders: SEED_FOLDERS };
 }
@@ -193,8 +183,6 @@ function load(): DemoState {
 function save(state: DemoState) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
-
-// ── Mock API ───────────────────────────────────────────────
 
 export const mockApi = {
   notes: {
@@ -241,7 +229,6 @@ export const mockApi = {
         archived: false,
         folderId: data.folderId ?? null,
         folder,
-        tags: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -260,6 +247,11 @@ export const mockApi = {
       if (idx === -1) throw new Error(`Note not found: ${id}`);
 
       Object.assign(state.notes[idx], { ...data, updatedAt: new Date().toISOString() });
+      if (data.folderId !== undefined) {
+        state.notes[idx].folder = data.folderId
+          ? (state.folders.find((f) => f.id === data.folderId) ?? null)
+          : null;
+      }
       save(state);
       return state.notes[idx];
     },
@@ -284,7 +276,7 @@ export const mockApi = {
           .map((l) => l.replace(/^[#>\-*\s]+/, '').trim())
           .find(Boolean) ?? '';
       return {
-        summary: `Demo mode summary — "${note.title || 'Untitled'}" (~${wordCount} words). Opens with: ${firstLine.slice(0, 120)}${firstLine.length > 120 ? '…' : ''} In production, a local LLM (Ollama) generates a real summary instead of this stub.`,
+        summary: `"${note.title || 'Untitled'}" (~${wordCount} words). Opens with: ${firstLine.slice(0, 120)}${firstLine.length > 120 ? '...' : ''}`,
       };
     },
   },

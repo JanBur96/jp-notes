@@ -21,9 +21,7 @@ router.post(
           .json({ error: "Cannot summarize an empty note" });
       }
 
-      // Cold-start calls on a freshly-loaded model can take a while, so the
-      // timeout needs to be generous. 3 minutes covers realistic cases
-      // without letting a truly hung request wait forever.
+      // Generous timeout for Ollama cold starts.
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 180000);
 
@@ -42,15 +40,9 @@ router.post(
       } catch (err) {
         clearTimeout(timeoutId);
         if ((err as Error).name === "AbortError") {
-          return res
-            .status(504)
-            .json({ error: "AI service timed out. Try again in a moment." });
+          return res.status(504).json({ error: "AI timeout" });
         }
-        // Most likely ECONNREFUSED — Ollama isn't running
-        return res.status(503).json({
-          error:
-            "AI service unavailable. Make sure Ollama is running on :11434.",
-        });
+        return res.status(503).json({ error: "AI unreachable" });
       }
       clearTimeout(timeoutId);
 

@@ -1,9 +1,4 @@
-/**
- * Tiny helper for matching keyboard shortcuts against a descriptor object.
- *
- * We use `e.code` (position-based) instead of `e.key` so shortcuts work on
- * non-US keyboard layouts where Alt+letter may produce a different character.
- */
+// Use e.code (not e.key) so Alt+letter combos work on non-US layouts.
 
 export interface Hotkey {
   code: string;

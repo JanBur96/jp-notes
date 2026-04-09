@@ -3,18 +3,16 @@ import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import notesRouter from "./routes/notes.js";
 import foldersRouter from "./routes/folders.js";
-import tagsRouter from "./routes/tags.js";
 import aiRouter from "./routes/ai.js";
 
 const app = express();
 const PORT = 4000;
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
 app.use("/api/notes", notesRouter);
 app.use("/api/folders", foldersRouter);
-app.use("/api/tags", tagsRouter);
 app.use("/api/ai", aiRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

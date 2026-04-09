@@ -245,9 +245,7 @@
     opacity: 0.5;
   }
 
-  /* `<button>` has an internal rendering box that ignores `display: block`,
-     so we force flex-column to get predictable stacked layout — otherwise
-     the children fall back to inline flow and the preview escapes the card. */
+  /* button needs explicit flex-column or the preview line escapes the card */
   .note-item-btn {
     all: unset;
     box-sizing: border-box;
@@ -307,8 +305,6 @@
   .note-item.active .note-date {
     color: var(--accent);
   }
-
-  /* ── Responsive ────────────────────────────────────────── */
 
   @media (max-width: 860px) {
     .pane-list {

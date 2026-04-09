@@ -114,8 +114,6 @@
     color: var(--text);
   }
 
-  /* Only show the overlay on narrow screens — on desktop the inline split
-     pane handles preview instead. */
   @media (max-width: 860px) {
     .preview-overlay {
       display: flex;

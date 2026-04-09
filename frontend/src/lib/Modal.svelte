@@ -72,7 +72,6 @@
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  /* Subtle gold light across the top — ties into the app's gaslight theme */
   .modal-glow {
     position: absolute;
     top: 0;

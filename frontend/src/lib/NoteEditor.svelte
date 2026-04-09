@@ -32,10 +32,6 @@
     DOMPurify.sanitize(marked.parse(content, { async: false }))
   );
 
-  // When the active note switches, pull its current state into the local
-  // editing buffer and clear any leftover AI summary. The cleanup function
-  // flushes unsaved edits back to the store when we navigate away — this is
-  // the only autosave path aside from the explicit Save button.
   $effect(() => {
     if (!activeNote) {
       title = '';
@@ -137,8 +133,21 @@
     <div class="editor-empty">
       <div class="empty-ornament" aria-hidden="true">
         <svg viewBox="0 0 80 80" fill="none">
-          <circle cx="40" cy="40" r="38" stroke="url(#ringStroke)" stroke-width="0.6" stroke-dasharray="2 4"/>
-          <circle cx="40" cy="40" r="26" stroke="url(#ringStroke)" stroke-width="0.8"/>
+          <circle
+            cx="40"
+            cy="40"
+            r="38"
+            stroke="url(#ringStroke)"
+            stroke-width="0.6"
+            stroke-dasharray="2 4"
+          />
+          <circle
+            cx="40"
+            cy="40"
+            r="26"
+            stroke="url(#ringStroke)"
+            stroke-width="0.8"
+          />
           <path
             d="M28 32h24M28 40h24M28 48h16"
             stroke="url(#ringStroke)"
@@ -147,16 +156,14 @@
           />
           <defs>
             <linearGradient id="ringStroke" x1="0" y1="0" x2="80" y2="80">
-              <stop offset="0" stop-color="#f1c774" stop-opacity="0.8"/>
-              <stop offset="1" stop-color="#c89040" stop-opacity="0.3"/>
+              <stop offset="0" stop-color="#f1c774" stop-opacity="0.8" />
+              <stop offset="1" stop-color="#c89040" stop-opacity="0.3" />
             </linearGradient>
           </defs>
         </svg>
       </div>
-      <h2 class="empty-heading">A quiet page</h2>
-      <p class="empty-sub">
-        Select a note from the library, or begin something new.
-      </p>
+      <h2 class="empty-heading">No note selected</h2>
+      <p class="empty-sub">Select a note or create a new one.</p>
       <div class="empty-hint">
         <kbd>Ctrl</kbd><span>+</span><kbd>Alt</kbd><span>+</span><kbd>N</kbd>
         <span class="empty-hint-label">for a new note</span>
@@ -203,10 +210,6 @@
     padding-top: 20px;
   }
 
-  /* ── Empty state ─────────────────────────────────────────
-     A calm, literary welcome. The ornament glows softly and
-     the hint shows the keyboard shortcut to start writing. */
-
   .editor-empty {
     display: flex;
     flex: 1;
@@ -247,8 +250,15 @@
   }
 
   @keyframes breathe {
-    0%, 100% { transform: scale(1); opacity: 0.92; }
-    50% { transform: scale(1.03); opacity: 1; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.92;
+    }
+    50% {
+      transform: scale(1.03);
+      opacity: 1;
+    }
   }
 
   .empty-heading {
@@ -304,8 +314,6 @@
     color: var(--text-3);
   }
 
-  /* ── Preview pane ────────────────────────────────────── */
-
   .preview-pane {
     flex: 1;
     min-width: 0;
@@ -313,8 +321,11 @@
     padding: 28px 32px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background:
-      linear-gradient(180deg, rgba(15, 24, 42, 0.55), rgba(8, 14, 26, 0.4));
+    background: linear-gradient(
+      180deg,
+      rgba(15, 24, 42, 0.55),
+      rgba(8, 14, 26, 0.4)
+    );
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--shadow-md);
@@ -328,7 +339,6 @@
       padding: 28px 32px 0;
     }
 
-    /* On narrow screens the fullscreen overlay replaces the split pane */
     .preview-pane {
       display: none;
     }

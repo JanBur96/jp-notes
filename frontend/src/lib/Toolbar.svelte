@@ -104,8 +104,6 @@
     -webkit-backdrop-filter: blur(18px) saturate(140%);
   }
 
-  /* A hair of gold bleeds along the bottom edge — this is the signature
-     accent stripe that ties the header to the gaslight motif. */
   .toolbar::after {
     content: '';
     position: absolute;
