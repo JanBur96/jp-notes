@@ -1,5 +1,6 @@
 import { Router } from "express";
 import type { Request, Response, NextFunction } from "express";
+import { Prisma } from "../../generated/prisma/client.js";
 import prisma from "../db.js";
 
 const router = Router();
@@ -28,8 +29,10 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     const { name, parentId } = req.body;
     if (!name?.trim()) return res.status(400).json({ error: "Folder name is required" });
 
-    const data: any = { name: name.trim() };
-    if (parentId) data.parentId = parentId;
+    const data: Prisma.FolderUncheckedCreateInput = {
+      name: name.trim(),
+      ...(parentId ? { parentId } : {}),
+    };
 
     const folder = await prisma.folder.create({ data });
     res.status(201).json(folder);
@@ -41,8 +44,9 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, parentId } = req.body;
-    const data: any = {};
-    if (name) data.name = name;
+    const data: Prisma.FolderUncheckedUpdateInput = {
+      ...(name ? { name } : {}),
+    };
     if ("parentId" in req.body) {
       if (parentId === req.params.id) {
         return res.status(400).json({ error: "Folder cannot be its own parent" });
@@ -52,8 +56,8 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
 
     const folder = await prisma.folder.update({ where: { id: req.params.id }, data });
     res.json(folder);
-  } catch (error: any) {
-    if (error.code === "P2025") return res.status(404).json({ error: "Folder not found" });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") return res.status(404).json({ error: "Folder not found" });
     next(error);
   }
 });
@@ -62,8 +66,8 @@ router.delete("/:id", async (req: Request, res: Response, next: NextFunction) =>
   try {
     await prisma.folder.delete({ where: { id: req.params.id } });
     res.status(204).end();
-  } catch (error: any) {
-    if (error.code === "P2025") return res.status(404).json({ error: "Folder not found" });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") return res.status(404).json({ error: "Folder not found" });
     next(error);
   }
 });

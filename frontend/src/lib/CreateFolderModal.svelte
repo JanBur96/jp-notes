@@ -4,7 +4,6 @@
 
   let inputEl: HTMLInputElement | null = $state(null);
 
-  // Focus the field on mount so the user can type immediately.
   $effect(() => {
     inputEl?.focus();
   });

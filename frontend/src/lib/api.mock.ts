@@ -68,6 +68,7 @@ Jan, Sarah, Mike, Product
 ### Side Projects
 - Browser extension to clip web pages into notes
 - Weekly digest email from pinned notes
+- See [[Svelte 5 Runes]] for framework notes
 
 ## Backlog
 - Voice-to-text input

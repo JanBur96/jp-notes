@@ -52,3 +52,7 @@ State is persisted to `localStorage` under `jp-notes-demo`.
 - CodeMirror 6 for the editor
 - marked + DOMPurify for the preview
 - Ollama for the summarise button
+
+## Tools
+
+I used [Claude Code](https://claude.ai/code) as a coding assistant throughout this project. The architecture, design decisions, and core logic are mine... Claude helped me move faster on the stuff that would otherwise just eat time: wiring up Prisma migrations, getting Express validation right, figuring out why a CSS stacking context was swallowing my mobile overlay, writing the `marked` tokenizer extension for wikilinks, and replacing `any` types with proper Prisma generics across the API routes. Basically anywhere I'd normally be tab-switching between docs and Stack Overflow, I used Claude instead. It's a great tool, which I recommend.

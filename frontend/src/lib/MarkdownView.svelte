@@ -1,12 +1,13 @@
 <script lang="ts">
   interface Props {
     html: string;
+    onclick?: (e: MouseEvent) => void;
   }
 
-  const { html }: Props = $props();
+  const { html, onclick }: Props = $props();
 </script>
 
-<div class="markdown-view">
+<div class="markdown-view" {onclick}>
   {@html html}
 </div>
 
@@ -151,5 +152,19 @@
   .markdown-view :global(em) {
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
+  }
+
+  .markdown-view :global(.wikilink) {
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(228, 178, 89, 0.4);
+  }
+
+  .markdown-view :global(.wikilink:hover) {
+    color: var(--accent-hi);
+    text-decoration-style: solid;
   }
 </style>

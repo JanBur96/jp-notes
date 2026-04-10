@@ -48,7 +48,13 @@
   <div class="editor-subheader">
     <div class="editor-meta">
       <span class="meta-chip">
-        <svg viewBox="0 0 14 14" width="10" height="10" fill="none" aria-hidden="true">
+        <svg
+          viewBox="0 0 14 14"
+          width="10"
+          height="10"
+          fill="none"
+          aria-hidden="true"
+        >
           <path
             d="M2 4c0-.55.45-1 1-1h2.3c.26 0 .52.1.7.29l.8.8c.19.19.44.29.71.29H11c.55 0 1 .45 1 1v5c0 .55-.45 1-1 1H3c-.55 0-1-.45-1-1V4z"
             stroke="currentColor"
@@ -59,17 +65,44 @@
       </span>
       <span class="meta-dot"></span>
       <span class="meta-chip">
-        <svg viewBox="0 0 14 14" width="10" height="10" fill="none" aria-hidden="true">
-          <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.1"/>
-          <path d="M7 4v3l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+        <svg
+          viewBox="0 0 14 14"
+          width="10"
+          height="10"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle
+            cx="7"
+            cy="7"
+            r="5.5"
+            stroke="currentColor"
+            stroke-width="1.1"
+          />
+          <path
+            d="M7 4v3l2 1.5"
+            stroke="currentColor"
+            stroke-width="1.1"
+            stroke-linecap="round"
+          />
         </svg>
         {formatDate(note.updatedAt)}
       </span>
     </div>
 
     <div class="editor-btns">
-      <button class="toolbar-btn" onclick={onSummarize} title="Generate AI summary">
-        <svg viewBox="0 0 14 14" width="11" height="11" fill="none" aria-hidden="true">
+      <button
+        class="toolbar-btn"
+        onclick={onSummarize}
+        title="Generate AI summary"
+      >
+        <svg
+          viewBox="0 0 14 14"
+          width="11"
+          height="11"
+          fill="none"
+          aria-hidden="true"
+        >
           <path
             d="M7 1.5l1.5 3.5 3.5 1-2.5 2.5.5 3.5L7 10.5 3 12l.5-3.5L1 6l3.5-1L7 1.5z"
             stroke="currentColor"
@@ -83,26 +116,60 @@
         class="toolbar-btn {showPreview ? 'primary' : ''}"
         onclick={onTogglePreview}
       >
-        <svg viewBox="0 0 14 14" width="11" height="11" fill="none" aria-hidden="true">
+        <svg
+          viewBox="0 0 14 14"
+          width="11"
+          height="11"
+          fill="none"
+          aria-hidden="true"
+        >
           <path
             d="M1 7s2-4.5 6-4.5S13 7 13 7s-2 4.5-6 4.5S1 7 1 7z"
             stroke="currentColor"
             stroke-width="1.1"
           />
-          <circle cx="7" cy="7" r="1.8" stroke="currentColor" stroke-width="1.1"/>
+          <circle
+            cx="7"
+            cy="7"
+            r="1.8"
+            stroke="currentColor"
+            stroke-width="1.1"
+          />
         </svg>
         Preview
       </button>
       <button class="toolbar-btn" class:saved={savedRecently} onclick={onSave}>
         {#if savedRecently}
-          <svg viewBox="0 0 14 14" width="11" height="11" fill="none" aria-hidden="true">
-            <path d="M2.5 7.5l3 3 6-6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            viewBox="0 0 14 14"
+            width="11"
+            height="11"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M2.5 7.5l3 3 6-6.5"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
           Saved
         {:else}
-          <svg viewBox="0 0 14 14" width="11" height="11" fill="none" aria-hidden="true">
-            <path d="M2.5 3c0-.55.45-1 1-1h6.79c.26 0 .52.1.7.29l1.21 1.21c.19.19.3.45.3.71V11c0 .55-.45 1-1 1h-8c-.55 0-1-.45-1-1V3z" stroke="currentColor" stroke-width="1.1"/>
-            <path d="M4.5 2v2.5h5V2" stroke="currentColor" stroke-width="1.1"/>
+          <svg
+            viewBox="0 0 14 14"
+            width="11"
+            height="11"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M2.5 3c0-.55.45-1 1-1h6.79c.26 0 .52.1.7.29l1.21 1.21c.19.19.3.45.3.71V11c0 .55-.45 1-1 1h-8c-.55 0-1-.45-1-1V3z"
+              stroke="currentColor"
+              stroke-width="1.1"
+            />
+            <path d="M4.5 2v2.5h5V2" stroke="currentColor" stroke-width="1.1" />
           </svg>
           Save
         {/if}
@@ -155,7 +222,6 @@
     margin-top: 14px;
   }
 
-  /* Gold-accented hairline under the header */
   .editor-subheader::before {
     content: '';
     position: absolute;

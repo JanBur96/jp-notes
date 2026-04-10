@@ -30,7 +30,6 @@
     const item = store.draggingItem;
     if (!item) return false;
     if (item.kind === 'note') return true;
-    // Folder drag: reject drops on self or on any descendant (would cycle)
     if (item.id === targetId) return false;
     if (isDescendant(folders, item.id, targetId)) return false;
     return true;

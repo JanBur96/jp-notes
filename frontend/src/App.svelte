@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { loadNotes, loadFolders, createNote, store } from './lib/store.svelte';
+  import {
+    loadNotes,
+    loadFolders,
+    createNote,
+    store,
+  } from './lib/store.svelte';
   import { matchHotkey } from './lib/hotkeys';
 
   import Sidebar from './lib/Sidebar.svelte';
@@ -29,9 +34,6 @@
     else if (store.mobilePane === 'list') store.mobilePane = 'sidebar';
   }
 
-  // Global keyboard shortcuts. We use Ctrl+Alt for actions the browser would
-  // otherwise swallow (Ctrl+N opens a new window, Ctrl+F hits the browser
-  // find bar). Escape is a chain: close modal first, then search.
   function onKeydown(e: KeyboardEvent) {
     if (matchHotkey(e, { code: 'KeyN', ctrl: true, alt: true })) {
       e.preventDefault();
@@ -84,15 +86,12 @@
     isolation: isolate;
   }
 
-  /* Soft gold + violet lights drifting across the shell. They sit below
-     every pane (z-index 0) while panels layer above at z-index 1+. */
   .ambient-mesh {
     position: absolute;
     inset: 0;
-    z-index: 0;
+    z-index: -1;
     pointer-events: none;
-    background:
-      radial-gradient(
+    background: radial-gradient(
         ellipse 60% 40% at 12% 8%,
         rgba(228, 178, 89, 0.14),
         transparent 70%
@@ -111,31 +110,26 @@
 
   .app-body {
     position: relative;
-    z-index: 1;
     display: flex;
     flex: 1;
     overflow: hidden;
   }
 
-  /* Tablet: sidebar hides when the editor is the active pane */
   @media (max-width: 860px) {
     .app-body[data-pane='editor'] :global(.pane-sidebar) {
       display: none;
     }
   }
 
-  /* Phone: the three panes stack, only one visible at a time */
   @media (max-width: 600px) {
     .app-body[data-pane='sidebar'] :global(.pane-list),
     .app-body[data-pane='sidebar'] :global(.pane-editor) {
       display: none;
     }
-
     .app-body[data-pane='list'] :global(.pane-sidebar),
     .app-body[data-pane='list'] :global(.pane-editor) {
       display: none;
     }
-
     .app-body[data-pane='editor'] :global(.pane-sidebar),
     .app-body[data-pane='editor'] :global(.pane-list) {
       display: none;

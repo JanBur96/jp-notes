@@ -20,7 +20,6 @@
     }
   });
 
-  // Rebuild the view only when noteId changes, not on every keystroke.
   $effect(() => {
     if (noteId === null) {
       view = null;

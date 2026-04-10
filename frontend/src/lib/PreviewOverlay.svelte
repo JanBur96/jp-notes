@@ -5,16 +5,30 @@
     title: string;
     html: string;
     onClose: () => void;
+    onWikilinkClick?: (e: MouseEvent) => void;
   }
 
-  const { title, html, onClose }: Props = $props();
+  const { title, html, onClose, onWikilinkClick }: Props = $props();
+
+  function handleBackdropClick(e: MouseEvent) {
+    if ((e.target as HTMLElement).classList.contains('preview-overlay')) {
+      onClose();
+    }
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') onClose();
+  }
 </script>
+
+<svelte:window onkeydown={handleKeydown} />
 
 <div
   class="preview-overlay"
   role="dialog"
   aria-modal="true"
   aria-label="Preview"
+  onclick={handleBackdropClick}
 >
   <div class="preview-overlay-header">
     <span class="preview-overlay-title">{title || 'Untitled'}</span>
@@ -25,7 +39,7 @@
     </button>
   </div>
   <div class="preview-overlay-body">
-    <MarkdownView {html} />
+    <MarkdownView {html} onclick={onWikilinkClick} />
   </div>
 </div>
 
@@ -38,7 +52,7 @@
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
-    padding: 0 24px 80px;
+    padding: 0 0 80px;
     background:
       radial-gradient(ellipse 80% 60% at 15% 0%, rgba(228, 178, 89, 0.08), transparent 60%),
       var(--bg);
@@ -64,8 +78,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 760px;
-    padding: 18px 0;
+    padding: 18px 24px;
     background: linear-gradient(180deg, var(--bg) 80%, transparent);
   }
 
@@ -108,7 +121,7 @@
   .preview-overlay-body {
     width: 100%;
     max-width: 760px;
-    padding: 40px 0 60px;
+    padding: 40px 24px 60px;
     font-size: 15.5px;
     line-height: 1.85;
     color: var(--text);
@@ -117,6 +130,13 @@
   @media (max-width: 860px) {
     .preview-overlay {
       display: flex;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .preview-close {
+      width: 44px;
+      height: 44px;
     }
   }
 </style>

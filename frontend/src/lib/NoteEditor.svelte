@@ -5,10 +5,14 @@
   import {
     saveNote,
     unarchiveNote,
+    loadNotes,
     store,
     summarizeNote,
   } from './store.svelte';
   import { matchHotkey } from './hotkeys';
+  import { wikilinkExtension } from './wikilinks';
+
+  marked.use({ extensions: [wikilinkExtension] });
 
   import CodeMirrorEditor from './CodeMirrorEditor.svelte';
   import EditorHeader from './EditorHeader.svelte';
@@ -85,6 +89,28 @@
     if (activeNote) unarchiveNote(activeNote.id);
   }
 
+  async function handleWikilinkClick(e: MouseEvent) {
+    const el = (e.target as HTMLElement).closest('.wikilink');
+    if (!el) return;
+    e.preventDefault();
+
+    const linkTitle = el.getAttribute('data-title');
+    if (!linkTitle) return;
+
+    const target = store.notes.find(
+      (n) => n.title.toLowerCase() === linkTitle.toLowerCase()
+    );
+    if (!target) return;
+
+    if (store.activeFolderId !== target.folderId) {
+      store.activeFolderId = target.folderId;
+      await loadNotes(target.folderId);
+    }
+    if (store.archiveMode) store.archiveMode = false;
+    store.activeNoteId = target.id;
+    store.mobilePane = 'editor';
+  }
+
   function onKeydown(e: KeyboardEvent) {
     if (matchHotkey(e, { code: 'KeyP', ctrl: true, alt: true })) {
       e.preventDefault();
@@ -124,7 +150,7 @@
         />
         {#if showPreview}
           <div class="preview-pane">
-            <MarkdownView html={previewHtml} />
+            <MarkdownView html={previewHtml} onclick={handleWikilinkClick} />
           </div>
         {/if}
       </div>
@@ -179,6 +205,7 @@
     {title}
     html={previewHtml}
     onClose={() => (showPreview = false)}
+    onWikilinkClick={handleWikilinkClick}
   />
 {/if}
 

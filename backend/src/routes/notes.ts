@@ -1,5 +1,6 @@
 import { Router } from "express";
 import type { Request, Response, NextFunction } from "express";
+import { Prisma } from "../../generated/prisma/client.js";
 import prisma from "../db.js";
 
 const router = Router();
@@ -7,7 +8,7 @@ const router = Router();
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { folderId, search, archived } = req.query;
-    const where: any = { archived: archived === "true" };
+    const where: Prisma.NoteWhereInput = { archived: archived === "true" };
 
     if (folderId) where.folderId = folderId as string;
     if (search) {
@@ -50,9 +51,11 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     if (content.length > 1_000_000) {
       return res.status(413).json({ error: "Content too large" });
     }
-    const data: any = { title, content };
-
-    if (folderId) data.folder = { connect: { id: folderId } };
+    const data: Prisma.NoteCreateInput = {
+      title,
+      content,
+      ...(folderId ? { folder: { connect: { id: folderId } } } : {}),
+    };
 
     const note = await prisma.note.create({
       data,
@@ -78,14 +81,14 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
         return res.status(413).json({ error: "Content too large" });
       }
     }
-    const data: any = {};
-    if (title !== undefined) data.title = title;
-    if (content !== undefined) data.content = content;
-    if (pinned !== undefined) data.pinned = pinned;
-    if (archived !== undefined) data.archived = archived;
-
-    if (folderId) data.folder = { connect: { id: folderId } };
-    else if (folderId === null) data.folder = { disconnect: true };
+    const data: Prisma.NoteUpdateInput = {
+      ...(title !== undefined ? { title } : {}),
+      ...(content !== undefined ? { content } : {}),
+      ...(pinned !== undefined ? { pinned } : {}),
+      ...(archived !== undefined ? { archived } : {}),
+      ...(folderId ? { folder: { connect: { id: folderId } } } : {}),
+      ...(folderId === null ? { folder: { disconnect: true } } : {}),
+    };
 
     const note = await prisma.note.update({
       where: { id: req.params.id },
@@ -93,8 +96,8 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
       include: { folder: true },
     });
     res.json(note);
-  } catch (error: any) {
-    if (error.code === "P2025")
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025")
       return res.status(404).json({ error: "Note not found" });
     next(error);
   }
@@ -106,8 +109,8 @@ router.delete(
     try {
       await prisma.note.delete({ where: { id: req.params.id } });
       res.status(204).end();
-    } catch (error: any) {
-      if (error.code === "P2025")
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025")
         return res.status(404).json({ error: "Note not found" });
       next(error);
     }
