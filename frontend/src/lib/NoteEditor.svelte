@@ -1,6 +1,8 @@
 <script lang="ts">
   import { marked } from 'marked';
   import DOMPurify from 'dompurify';
+  import hljs from 'highlight.js';
+  import 'highlight.js/styles/github-dark.css';
 
   import {
     saveNote,
@@ -12,7 +14,16 @@
   import { matchHotkey } from './hotkeys';
   import { wikilinkExtension } from './wikilinks';
 
-  marked.use({ extensions: [wikilinkExtension] });
+  marked.use({
+    renderer: {
+      code({ text, lang }) {
+        const language = lang && hljs.getLanguage(lang) ? lang : 'plaintext';
+        const highlighted = hljs.highlight(text, { language }).value;
+        return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`;
+      },
+    },
+    extensions: [wikilinkExtension],
+  });
 
   import CodeMirrorEditor from './CodeMirrorEditor.svelte';
   import EditorHeader from './EditorHeader.svelte';
@@ -112,6 +123,11 @@
   }
 
   function onKeydown(e: KeyboardEvent) {
+    if (savedTimer !== null) clearTimeout(savedTimer);
+    savedTimer = window.setTimeout(() => {
+      void save();
+    }, 2000);
+
     if (matchHotkey(e, { code: 'KeyP', ctrl: true, alt: true })) {
       e.preventDefault();
       showPreview = !showPreview;

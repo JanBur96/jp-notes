@@ -250,3 +250,13 @@ export function summarizeNote(id: string) {
       store.aiLoading = false;
     });
 }
+
+export async function download() {
+  try {
+    await api.export.download();
+  } catch (error) {
+    console.error('Failed to download notes:', error);
+    store.hasError =
+      error instanceof Error ? error.message : 'Failed to download notes';
+  }
+}

@@ -102,6 +102,21 @@ const realApi = {
         method: 'POST',
       }),
   },
+  export: {
+    async download() {
+      const res = await fetch(`${BASE}/export`);
+      if (!res.ok) throw new ApiError(res.status, 'Failed to export notes');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'notes.zip';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    },
+  },
 };
 
 export const api = import.meta.env.VITE_DEMO === 'true' ? mockApi : realApi;

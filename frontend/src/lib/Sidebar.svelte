@@ -4,6 +4,7 @@
     store,
     moveNoteToFolder,
     moveFolderToParent,
+    download,
   } from './store.svelte';
 
   let allNotesDragOver = $state(false);
@@ -64,71 +65,93 @@
 </script>
 
 <aside class="pane-sidebar">
-  <div class="section-label">
-    <span class="label-dot"></span>
-    Library
-  </div>
+  <div>
+    <div class="section-label">
+      <span class="label-dot"></span>
+      Library
+    </div>
 
-  <ul class="folder-tree">
-    <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-    <li>
-      <span
-        class="nav-entry"
-        class:active={store.activeFolderId === null &&
-          store.archiveMode === false}
-        class:drop-target={allNotesDragOver}
-        onclick={selectAllNotes}
-        ondragover={handleAllNotesDragOver}
-        ondragleave={() => (allNotesDragOver = false)}
-        ondrop={handleAllNotesDrop}
-      >
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path
-            d="M3 4c0-.55.45-1 1-1h8c.55 0 1 .45 1 1v8c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1V4z"
-            stroke="currentColor"
-            stroke-width="1.2"
+    <ul class="folder-tree">
+      <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+      <li>
+        <span
+          class="nav-entry"
+          class:active={store.activeFolderId === null &&
+            store.archiveMode === false}
+          class:drop-target={allNotesDragOver}
+          onclick={selectAllNotes}
+          ondragover={handleAllNotesDragOver}
+          ondragleave={() => (allNotesDragOver = false)}
+          ondrop={handleAllNotesDrop}
+        >
+          <svg
+            class="nav-icon"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M3 4c0-.55.45-1 1-1h8c.55 0 1 .45 1 1v8c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1V4z"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+            <path
+              d="M5.5 6.5h5M5.5 9h5M5.5 11.5h3"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span>All Notes</span>
+        </span>
+      </li>
+      <li>
+        <ul>
+          <FolderTree
+            folders={store.folders}
+            parentId={null}
+            activeFolderId={store.activeFolderId}
+            onSelect={selectFolder}
+            onDropNote={handleDropNote}
+            onDropFolder={handleDropFolder}
           />
-          <path d="M5.5 6.5h5M5.5 9h5M5.5 11.5h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-        </svg>
-        <span>All Notes</span>
-      </span>
-    </li>
-    <li>
-      <ul>
-        <FolderTree
-          folders={store.folders}
-          parentId={null}
-          activeFolderId={store.activeFolderId}
-          onSelect={selectFolder}
-          onDropNote={handleDropNote}
-          onDropFolder={handleDropFolder}
-        />
-      </ul>
-    </li>
-    <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-    <li>
-      <span
-        class="nav-entry"
-        class:active={store.archiveMode}
-        onclick={selectArchive}
-      >
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path
-            d="M2.5 4c0-.55.45-1 1-1h9c.55 0 1 .45 1 1v1.5c0 .55-.45 1-1 1h-9c-.55 0-1-.45-1-1V4z"
-            stroke="currentColor"
-            stroke-width="1.2"
-          />
-          <path
-            d="M3.5 6.5v5.5c0 .55.45 1 1 1h7c.55 0 1-.45 1-1V6.5M6.5 9h3"
-            stroke="currentColor"
-            stroke-width="1.2"
-            stroke-linecap="round"
-          />
-        </svg>
-        <span>Archive</span>
-      </span>
-    </li>
-  </ul>
+        </ul>
+      </li>
+      <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+      <li>
+        <span
+          class="nav-entry"
+          class:active={store.archiveMode}
+          onclick={selectArchive}
+        >
+          <svg
+            class="nav-icon"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M2.5 4c0-.55.45-1 1-1h9c.55 0 1 .45 1 1v1.5c0 .55-.45 1-1 1h-9c-.55 0-1-.45-1-1V4z"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+            <path
+              d="M3.5 6.5v5.5c0 .55.45 1 1 1h7c.55 0 1-.45 1-1V6.5M6.5 9h3"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span>Archive</span>
+        </span>
+      </li>
+    </ul>
+  </div>
+  <div class="export">
+    <button class="export-button" onclick={() => download()}>
+      Export Notes
+    </button>
+  </div>
 </aside>
 
 <style>
@@ -136,6 +159,7 @@
     position: relative;
     z-index: 1;
     display: flex;
+    justify-content: space-between;
     flex-shrink: 0;
     flex-direction: column;
     width: 220px;
@@ -143,8 +167,11 @@
     overflow-y: auto;
     padding: 22px 0 16px;
     border-right: 1px solid var(--border);
-    background:
-      linear-gradient(180deg, rgba(15, 24, 42, 0.55), rgba(8, 14, 26, 0.35));
+    background: linear-gradient(
+      180deg,
+      rgba(15, 24, 42, 0.55),
+      rgba(8, 14, 26, 0.35)
+    );
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
   }
@@ -303,11 +330,53 @@
     opacity: 0.5;
   }
 
+  .export {
+    padding: 0 12px;
+  }
+
+  .export-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--border-hi);
+    border-radius: var(--radius-pill);
+    background: rgba(20, 30, 50, 0.4);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    color: var(--text-2);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+      background var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+
+  .export-button:hover {
+    border-color: rgba(140, 180, 240, 0.22);
+    background: rgba(30, 45, 72, 0.6);
+    color: var(--text);
+  }
+
   @media (max-width: 860px) {
-    .pane-sidebar { width: 200px; min-width: 200px; }
+    .pane-sidebar {
+      width: 200px;
+      min-width: 200px;
+    }
   }
 
   @media (max-width: 600px) {
-    .pane-sidebar { width: 100%; min-width: 0; border-right: none; }
+    .pane-sidebar {
+      width: 100%;
+      min-width: 0;
+      border-right: none;
+    }
   }
 </style>

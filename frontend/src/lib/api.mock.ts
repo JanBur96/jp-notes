@@ -319,4 +319,10 @@ export const mockApi = {
       save(state);
     },
   },
+
+  export: {
+    async download() {
+      alert('Export is not available in demo mode');
+    },
+  },
 };

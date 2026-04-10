@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { EditorView, basicSetup } from 'codemirror';
   import { markdown } from '@codemirror/lang-markdown';
   import { EditorState } from '@codemirror/state';
@@ -25,10 +26,11 @@
       view = null;
       return;
     }
+    const doc = untrack(() => initialContent);
     const v = new EditorView({
       parent: container,
       state: EditorState.create({
-        doc: initialContent,
+        doc,
         extensions: [basicSetup, markdown(), listener, EditorView.lineWrapping],
       }),
     });

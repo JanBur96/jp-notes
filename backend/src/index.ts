@@ -4,6 +4,7 @@ import cors from "cors";
 import notesRouter from "./routes/notes.js";
 import foldersRouter from "./routes/folders.js";
 import aiRouter from "./routes/ai.js";
+import exportRouter from "./routes/export.js";
 
 const app = express();
 const PORT = 4000;
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use("/api/notes", notesRouter);
 app.use("/api/folders", foldersRouter);
 app.use("/api/ai", aiRouter);
+app.use("/api/export", exportRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
