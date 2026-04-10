@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "demo": "VITE_DEMO=true vite",
+    "demo": "VITE_DEMO=true vite --mode demo",
     "build": "vite build",
-    "build:demo": "VITE_DEMO=true vite build",
+    "build:demo": "VITE_DEMO=true vite build --mode demo",
     "deploy": "npm run build:demo && gh-pages -d dist",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
