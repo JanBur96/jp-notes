@@ -125,7 +125,7 @@ body {
   transform: translateY(1px);
 }
 
-.toolbar-btn.primary {
+.toolbar-btn--primary {
   border-color: rgba(228, 178, 89, 0.38);
   background: linear-gradient(
     180deg,
@@ -138,7 +138,7 @@ body {
     0 2px 14px -4px rgba(228, 178, 89, 0.3);
 }
 
-.toolbar-btn.primary:hover {
+.toolbar-btn--primary:hover {
   border-color: rgba(228, 178, 89, 0.55);
   background: linear-gradient(
     180deg,
@@ -160,6 +160,91 @@ body {
 .toolbar-btn--error:hover {
   background: rgba(220, 90, 90, 0.18);
   color: #e28989;
+}
+
+.toolbar-btn--saved {
+  border-color: rgba(120, 210, 150, 0.34);
+  background: rgba(120, 210, 150, 0.12);
+  color: #8bd0a3;
+}
+
+.nav-entry {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.nav-entry:hover {
+  background: rgba(140, 180, 240, 0.05);
+  color: var(--text);
+}
+
+.nav-entry--active {
+  border-color: rgba(228, 178, 89, 0.3);
+  background: linear-gradient(
+    90deg,
+    rgba(228, 178, 89, 0.18),
+    rgba(228, 178, 89, 0.04)
+  );
+  color: var(--text);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 150, 0.08),
+    0 2px 16px -6px rgba(228, 178, 89, 0.3);
+}
+
+.nav-entry--active::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #f1c774, #c89040);
+  box-shadow: 0 0 10px rgba(228, 178, 89, 0.6);
+}
+
+.nav-entry--drop-target {
+  border-color: var(--accent);
+  background: rgba(228, 178, 89, 0.2);
+  color: var(--text);
+  outline: 1px dashed var(--accent);
+  outline-offset: -2px;
+  box-shadow: 0 0 18px -4px rgba(228, 178, 89, 0.45);
+}
+
+.nav-entry--dragging {
+  opacity: 0.5;
+}
+
+.nav-entry__icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: var(--text-3);
+  transition: color var(--dur) var(--ease);
+}
+
+.nav-entry:hover .nav-entry__icon,
+.nav-entry--active .nav-entry__icon {
+  color: var(--accent);
 }
 
 ::-webkit-scrollbar {

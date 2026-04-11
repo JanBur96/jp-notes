@@ -1,0 +1,29 @@
+# Node
+**/node_modules
+**/npm-debug.log
+
+# Build output (rebuilt in the image)
+frontend/dist
+backend/generated
+
+# Local SQLite databases — never bake into the image
+**/*.db
+**/*.db-wal
+**/*.db-shm
+
+# Env files and editor clutter
+.env*
+!.env.example
+.git
+.gitignore
+.claude
+.vscode
+.idea
+.DS_Store
+README.md
+*.log
+
+# Docker artifacts themselves
+Dockerfile
+docker-compose.yml
+.dockerignore

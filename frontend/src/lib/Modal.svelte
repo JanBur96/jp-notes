@@ -6,14 +6,14 @@
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-<div class="modal-backdrop" onclick={() => (store.modal = null)}>
+<div class="modal" onclick={() => (store.modal = null)}>
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-  <div class="modal-content" onclick={(e) => e.stopPropagation()}>
-    <div class="modal-glow" aria-hidden="true"></div>
-    <div class="modal-header">
-      <h2>{title}</h2>
+  <div class="modal__content" onclick={(e) => e.stopPropagation()}>
+    <div class="modal__glow" aria-hidden="true"></div>
+    <div class="modal__header">
+      <h2 class="modal__title">{title}</h2>
       <button
-        class="modal-close"
+        class="modal__close"
         aria-label="Close"
         onclick={() => (store.modal = null)}
       >
@@ -22,14 +22,14 @@
         </svg>
       </button>
     </div>
-    <div class="modal-body">
+    <div class="modal__body">
       {@render children()}
     </div>
   </div>
 </div>
 
 <style>
-  .modal-backdrop {
+  .modal {
     position: fixed;
     inset: 0;
     z-index: 100;
@@ -46,7 +46,7 @@
     to { opacity: 1; }
   }
 
-  .modal-content {
+  .modal__content {
     position: relative;
     width: calc(100% - 32px);
     max-width: 460px;
@@ -72,7 +72,7 @@
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  .modal-glow {
+  .modal__glow {
     position: absolute;
     top: 0;
     left: 20%;
@@ -87,14 +87,14 @@
     pointer-events: none;
   }
 
-  .modal-header {
+  .modal__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
   }
 
-  .modal-header h2 {
+  .modal__title {
     font-family: 'Lora', Georgia, serif;
     font-size: 20px;
     font-weight: 600;
@@ -102,7 +102,7 @@
     color: var(--text);
   }
 
-  .modal-close {
+  .modal__close {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,13 +119,13 @@
       border-color var(--dur) var(--ease);
   }
 
-  .modal-close:hover {
+  .modal__close:hover {
     color: var(--text);
     background: rgba(30, 45, 72, 0.7);
     border-color: var(--border-hi);
   }
 
-  .modal-body {
+  .modal__body {
     padding: 0;
   }
 </style>

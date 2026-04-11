@@ -64,28 +64,31 @@
   }
 </script>
 
-<aside class="pane-sidebar">
+<aside class="sidebar">
   <div>
-    <div class="section-label">
-      <span class="label-dot"></span>
+    <div class="sidebar__section-label">
+      <span class="sidebar__section-dot"></span>
       Library
     </div>
 
-    <ul class="folder-tree">
+    <ul class="sidebar__tree">
       <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
       <li>
         <span
-          class="nav-entry"
-          class:active={store.activeFolderId === null &&
-            store.archiveMode === false}
-          class:drop-target={allNotesDragOver}
+          class={[
+            'nav-entry',
+            store.activeFolderId === null &&
+              store.archiveMode === false &&
+              'nav-entry--active',
+            allNotesDragOver && 'nav-entry--drop-target',
+          ]}
           onclick={selectAllNotes}
           ondragover={handleAllNotesDragOver}
           ondragleave={() => (allNotesDragOver = false)}
           ondrop={handleAllNotesDrop}
         >
           <svg
-            class="nav-icon"
+            class="nav-entry__icon"
             viewBox="0 0 16 16"
             fill="none"
             aria-hidden="true"
@@ -120,12 +123,11 @@
       <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
       <li>
         <span
-          class="nav-entry"
-          class:active={store.archiveMode}
+          class={['nav-entry', store.archiveMode && 'nav-entry--active']}
           onclick={selectArchive}
         >
           <svg
-            class="nav-icon"
+            class="nav-entry__icon"
             viewBox="0 0 16 16"
             fill="none"
             aria-hidden="true"
@@ -147,15 +149,15 @@
       </li>
     </ul>
   </div>
-  <div class="export">
-    <button class="export-button" onclick={() => download()}>
+  <div class="sidebar__export">
+    <button class="sidebar__export-button" onclick={() => download()}>
       Export Notes
     </button>
   </div>
 </aside>
 
 <style>
-  .pane-sidebar {
+  .sidebar {
     position: relative;
     z-index: 1;
     display: flex;
@@ -176,7 +178,7 @@
     -webkit-backdrop-filter: blur(14px);
   }
 
-  .section-label {
+  .sidebar__section-label {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -188,7 +190,7 @@
     color: var(--text-3);
   }
 
-  .label-dot {
+  .sidebar__section-dot {
     width: 5px;
     height: 5px;
     border-radius: 50%;
@@ -196,98 +198,24 @@
     box-shadow: 0 0 8px rgba(228, 178, 89, 0.5);
   }
 
-  .folder-tree {
+  .sidebar__tree {
     list-style: none;
     padding: 0 10px 12px;
   }
 
-  .folder-tree :global(li) {
+  .sidebar__tree :global(li) {
     user-select: none;
   }
 
-  .nav-entry,
-  .folder-tree :global(button),
-  .folder-tree :global(details > summary) {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    background: none;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-2);
-    cursor: pointer;
-    transition:
-      background var(--dur) var(--ease),
-      border-color var(--dur) var(--ease),
-      color var(--dur) var(--ease),
-      box-shadow var(--dur) var(--ease);
-  }
-
-  .nav-entry:hover,
-  .folder-tree :global(button:hover),
-  .folder-tree :global(details > summary:hover) {
-    background: rgba(140, 180, 240, 0.05);
-    color: var(--text);
-  }
-
-  .nav-entry.active,
-  .folder-tree :global(button.active),
-  .folder-tree :global(summary.active) {
-    border-color: rgba(228, 178, 89, 0.3);
-    background: linear-gradient(
-      90deg,
-      rgba(228, 178, 89, 0.18),
-      rgba(228, 178, 89, 0.04)
-    );
-    color: var(--text);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 220, 150, 0.08),
-      0 2px 16px -6px rgba(228, 178, 89, 0.3);
-  }
-
-  .nav-entry.active::before,
-  .folder-tree :global(button.active::before),
-  .folder-tree :global(summary.active::before) {
-    content: '';
-    position: absolute;
-    left: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 18px;
-    border-radius: 0 3px 3px 0;
-    background: linear-gradient(180deg, #f1c774, #c89040);
-    box-shadow: 0 0 10px rgba(228, 178, 89, 0.6);
-  }
-
-  .nav-icon {
-    flex-shrink: 0;
-    width: 14px;
-    height: 14px;
-    color: var(--text-3);
-    transition: color var(--dur) var(--ease);
-  }
-
-  .nav-entry:hover .nav-icon,
-  .nav-entry.active .nav-icon {
-    color: var(--accent);
-  }
-
-  .folder-tree :global(details > summary) {
+  .sidebar__tree :global(details > summary) {
     list-style: none;
   }
 
-  .folder-tree :global(details > summary::-webkit-details-marker) {
+  .sidebar__tree :global(details > summary::-webkit-details-marker) {
     display: none;
   }
 
-  .folder-tree :global(details > summary::after) {
+  .sidebar__tree :global(details > summary::after) {
     content: '';
     display: inline-block;
     margin-left: auto;
@@ -299,42 +227,26 @@
     transition: transform 0.2s var(--ease);
   }
 
-  .folder-tree :global(details[open] > summary::after) {
+  .sidebar__tree :global(details[open] > summary::after) {
     transform: rotate(45deg);
   }
 
-  .folder-tree :global(details > summary:hover::after),
-  .folder-tree :global(details > summary.active::after) {
+  .sidebar__tree :global(details > summary:hover::after),
+  .sidebar__tree :global(details > summary.nav-entry--active::after) {
     border-color: var(--accent);
   }
 
-  .folder-tree :global(ul) {
+  .sidebar__tree :global(ul) {
     list-style: none;
     padding-left: 16px;
     margin-top: 2px;
   }
 
-  .nav-entry.drop-target,
-  .folder-tree :global(button.drop-target),
-  .folder-tree :global(summary.drop-target) {
-    border-color: var(--accent);
-    background: rgba(228, 178, 89, 0.2);
-    color: var(--text);
-    outline: 1px dashed var(--accent);
-    outline-offset: -2px;
-    box-shadow: 0 0 18px -4px rgba(228, 178, 89, 0.45);
-  }
-
-  .folder-tree :global(button.dragging),
-  .folder-tree :global(summary.dragging) {
-    opacity: 0.5;
-  }
-
-  .export {
+  .sidebar__export {
     padding: 0 12px;
   }
 
-  .export-button {
+  .sidebar__export-button {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -359,21 +271,21 @@
       transform var(--dur) var(--ease);
   }
 
-  .export-button:hover {
+  .sidebar__export-button:hover {
     border-color: rgba(140, 180, 240, 0.22);
     background: rgba(30, 45, 72, 0.6);
     color: var(--text);
   }
 
   @media (max-width: 860px) {
-    .pane-sidebar {
+    .sidebar {
       width: 200px;
       min-width: 200px;
     }
   }
 
   @media (max-width: 600px) {
-    .pane-sidebar {
+    .sidebar {
       width: 100%;
       min-width: 0;
       border-right: none;

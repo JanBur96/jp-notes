@@ -20,20 +20,20 @@
 
 {#if store.modal?.kind === 'create-folder'}
   <Modal title="Create folder">
-    <label class="modal-field">
+    <label class="create-folder__field">
       <input
         bind:this={inputEl}
         bind:value={store.modal.name}
-        class="modal-input"
+        class="create-folder__input"
         placeholder="Folder name…"
         onkeydown={(e) => e.key === 'Enter' && submit()}
       />
     </label>
-    <div class="modal-actions">
+    <div class="create-folder__actions">
       <button class="toolbar-btn" onclick={() => (store.modal = null)}>
         Cancel
       </button>
-      <button class="toolbar-btn primary" onclick={submit}>
+      <button class="toolbar-btn toolbar-btn--primary" onclick={submit}>
         Create folder
       </button>
     </div>
@@ -41,13 +41,13 @@
 {/if}
 
 <style>
-  .modal-field {
+  .create-folder__field {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
-  .modal-input {
+  .create-folder__input {
     width: 100%;
     padding: 12px 16px;
     border: 1px solid var(--border-hi);
@@ -63,11 +63,11 @@
       box-shadow var(--dur) var(--ease);
   }
 
-  .modal-input::placeholder {
+  .create-folder__input::placeholder {
     color: var(--text-3);
   }
 
-  .modal-input:focus {
+  .create-folder__input:focus {
     border-color: rgba(228, 178, 89, 0.45);
     background: rgba(12, 20, 36, 0.75);
     box-shadow:
@@ -75,7 +75,7 @@
       0 4px 18px -6px rgba(228, 178, 89, 0.25);
   }
 
-  .modal-actions {
+  .create-folder__actions {
     display: flex;
     justify-content: flex-end;
     gap: 8px;

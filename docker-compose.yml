@@ -1,0 +1,21 @@
+services:
+  jp-notes:
+    build: .
+    image: jp-notes:latest
+    container_name: jp-notes
+    restart: unless-stopped
+    ports:
+      # Host:Container. Change the left side if 4000 is taken on your server.
+      - "4000:4000"
+    volumes:
+      # Named volume for the SQLite database so it survives rebuilds.
+      - jp-notes-data:/data
+    environment:
+      # Uncomment and point at an Ollama instance if you want the AI
+      # summarise button to work. Leaving it unset disables the feature
+      # gracefully (the UI shows "AI unreachable").
+      # OLLAMA_URL: "http://host.docker.internal:11434"
+      DATABASE_URL: "file:/data/jp-notes.db"
+
+volumes:
+  jp-notes-data:

@@ -53,8 +53,8 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<div class="app-shell">
-  <div class="ambient-mesh" aria-hidden="true"></div>
+<div class="app">
+  <div class="app__ambient" aria-hidden="true"></div>
 
   <CreateFolderModal />
   <ConfirmDeleteNoteModal />
@@ -68,7 +68,7 @@
 
   <ErrorBanner />
 
-  <div class="app-body" data-pane={store.mobilePane}>
+  <div class={['app__body', `app__body--pane-${store.mobilePane}`]}>
     <Sidebar />
     <NoteList />
     <NoteEditor />
@@ -78,7 +78,7 @@
 </div>
 
 <style>
-  .app-shell {
+  .app {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -86,7 +86,7 @@
     isolation: isolate;
   }
 
-  .ambient-mesh {
+  .app__ambient {
     position: absolute;
     inset: 0;
     z-index: -1;
@@ -108,7 +108,7 @@
       );
   }
 
-  .app-body {
+  .app__body {
     position: relative;
     display: flex;
     flex: 1;
@@ -116,22 +116,22 @@
   }
 
   @media (max-width: 860px) {
-    .app-body[data-pane='editor'] :global(.pane-sidebar) {
+    .app__body--pane-editor :global(.sidebar) {
       display: none;
     }
   }
 
   @media (max-width: 600px) {
-    .app-body[data-pane='sidebar'] :global(.pane-list),
-    .app-body[data-pane='sidebar'] :global(.pane-editor) {
+    .app__body--pane-sidebar :global(.note-list),
+    .app__body--pane-sidebar :global(.note-editor) {
       display: none;
     }
-    .app-body[data-pane='list'] :global(.pane-sidebar),
-    .app-body[data-pane='list'] :global(.pane-editor) {
+    .app__body--pane-list :global(.sidebar),
+    .app__body--pane-list :global(.note-editor) {
       display: none;
     }
-    .app-body[data-pane='editor'] :global(.pane-sidebar),
-    .app-body[data-pane='editor'] :global(.pane-list) {
+    .app__body--pane-editor :global(.sidebar),
+    .app__body--pane-editor :global(.note-list) {
       display: none;
     }
   }

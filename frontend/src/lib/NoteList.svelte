@@ -56,27 +56,30 @@
   }
 </script>
 
-<section class="pane-list">
-  <div class="list-header">
-    <span class="list-label">Notes</span>
-    <span class="list-folder">{activeFolderName}</span>
-    <span class="list-count">{displayedNotes.length}</span>
+<section class="note-list">
+  <div class="note-list__header">
+    <span class="note-list__header-label">Notes</span>
+    <span class="note-list__header-folder">{activeFolderName}</span>
+    <span class="note-list__header-count">{displayedNotes.length}</span>
   </div>
 
   {#if displayedNotes.length === 0}
-    <div class="list-empty">
-      <span class="list-empty-line"></span>
-      <p>No notes yet</p>
+    <div class="note-list__empty">
+      <span class="note-list__empty-line"></span>
+      <p class="note-list__empty-text">No notes yet</p>
     </div>
   {/if}
 
-  <ul class="note-list">
+  <ul class="note-list__items">
     {#each displayedNotes as note (note.id)}
       <li
-        class="note-item"
-        class:active={note.id === store.activeNoteId}
-        class:dragging={store.draggingItem?.kind === 'note' &&
-          store.draggingItem.id === note.id}
+        class={[
+          'note-list__item',
+          note.id === store.activeNoteId && 'note-list__item--active',
+          store.draggingItem?.kind === 'note' &&
+            store.draggingItem.id === note.id &&
+            'note-list__item--dragging',
+        ]}
         draggable={!store.archiveMode}
         ondragstart={(e) => {
           if (store.archiveMode) {
@@ -93,18 +96,18 @@
       >
         <button
           type="button"
-          class="note-item-btn"
+          class="note-list__item-button"
           onclick={() => {
             store.activeNoteId = note.id;
             store.mobilePane = 'editor';
           }}
         >
-          <div class="note-title">{note.title || 'Untitled'}</div>
+          <div class="note-list__item-title">{note.title || 'Untitled'}</div>
           {#if note.content.trim()}
-            <div class="note-preview">{previewOf(note.content)}</div>
+            <div class="note-list__item-preview">{previewOf(note.content)}</div>
           {/if}
-          <div class="note-meta">
-            <span class="note-date">{formatDate(note.updatedAt)}</span>
+          <div class="note-list__item-meta">
+            <span class="note-list__item-date">{formatDate(note.updatedAt)}</span>
           </div>
         </button>
       </li>
@@ -113,7 +116,7 @@
 </section>
 
 <style>
-  .pane-list {
+  .note-list {
     position: relative;
     z-index: 1;
     flex-shrink: 0;
@@ -128,7 +131,7 @@
     -webkit-backdrop-filter: blur(14px);
   }
 
-  .list-header {
+  .note-list__header {
     display: flex;
     align-items: baseline;
     gap: 8px;
@@ -137,7 +140,7 @@
     margin-bottom: 8px;
   }
 
-  .list-label {
+  .note-list__header-label {
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -145,7 +148,7 @@
     color: var(--text-3);
   }
 
-  .list-folder {
+  .note-list__header-folder {
     flex: 1;
     overflow: hidden;
     font-family: 'Lora', Georgia, serif;
@@ -158,7 +161,7 @@
     color: var(--text);
   }
 
-  .list-count {
+  .note-list__header-count {
     padding: 2px 8px;
     border: 1px solid var(--border-hi);
     border-radius: var(--radius-pill);
@@ -168,7 +171,7 @@
     background: rgba(20, 30, 50, 0.5);
   }
 
-  .list-empty {
+  .note-list__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -177,7 +180,7 @@
     color: var(--text-3);
   }
 
-  .list-empty-line {
+  .note-list__empty-line {
     width: 24px;
     height: 1px;
     background: linear-gradient(
@@ -188,18 +191,18 @@
     );
   }
 
-  .list-empty p {
+  .note-list__empty-text {
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
     font-size: 13px;
   }
 
-  .note-list {
+  .note-list__items {
     list-style: none;
     padding: 0 10px;
   }
 
-  .note-item {
+  .note-list__item {
     position: relative;
     margin-bottom: 2px;
     border: 1px solid transparent;
@@ -213,11 +216,11 @@
       transform var(--dur) var(--ease);
   }
 
-  .note-item:hover {
+  .note-list__item:hover {
     background: rgba(140, 180, 240, 0.04);
   }
 
-  .note-item.active {
+  .note-list__item--active {
     border-color: rgba(228, 178, 89, 0.28);
     background: linear-gradient(
       135deg,
@@ -229,7 +232,7 @@
       0 4px 22px -8px rgba(228, 178, 89, 0.35);
   }
 
-  .note-item.active::before {
+  .note-list__item--active::before {
     content: '';
     position: absolute;
     left: -10px;
@@ -241,12 +244,12 @@
     box-shadow: 0 0 12px rgba(228, 178, 89, 0.6);
   }
 
-  .note-item.dragging {
+  .note-list__item--dragging {
     opacity: 0.5;
   }
 
   /* button needs explicit flex-column or the preview line escapes the card */
-  .note-item-btn {
+  .note-list__item-button {
     all: unset;
     box-sizing: border-box;
     display: flex;
@@ -259,7 +262,7 @@
     cursor: pointer;
   }
 
-  .note-title {
+  .note-list__item-title {
     display: block;
     min-width: 0;
     max-width: 100%;
@@ -272,7 +275,7 @@
     color: var(--text);
   }
 
-  .note-preview {
+  .note-list__item-preview {
     display: block;
     min-width: 0;
     max-width: 100%;
@@ -285,7 +288,7 @@
     color: var(--text-2);
   }
 
-  .note-meta {
+  .note-list__item-meta {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -294,7 +297,7 @@
     margin-top: 6px;
   }
 
-  .note-date {
+  .note-list__item-date {
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.04em;
@@ -302,19 +305,19 @@
     color: var(--text-3);
   }
 
-  .note-item.active .note-date {
+  .note-list__item--active .note-list__item-date {
     color: var(--accent);
   }
 
   @media (max-width: 860px) {
-    .pane-list {
+    .note-list {
       width: 250px;
       min-width: 250px;
     }
   }
 
   @media (max-width: 600px) {
-    .pane-list {
+    .note-list {
       width: 100%;
       min-width: 0;
       border-right: none;

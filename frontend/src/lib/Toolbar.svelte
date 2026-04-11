@@ -19,14 +19,17 @@
 
 <header class="toolbar">
   <button
-    class="toolbar-btn mobile-back"
-    class:hidden={store.mobilePane === 'sidebar'}
+    class={[
+      'toolbar-btn',
+      'toolbar__back',
+      store.mobilePane === 'sidebar' && 'toolbar__back--hidden',
+    ]}
     onclick={onBack}
     aria-label="Back">←</button
   >
 
-  <div class="brand" aria-label="JPNotes">
-    <span class="brand-mark" aria-hidden="true">
+  <div class="toolbar__brand" aria-label="JPNotes">
+    <span class="toolbar__brand-mark" aria-hidden="true">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
         <path
           d="M6 4.5c0-.83.67-1.5 1.5-1.5h7.2c.4 0 .78.16 1.06.44l3.8 3.8c.28.28.44.66.44 1.06V19.5c0 .83-.67 1.5-1.5 1.5h-11c-.83 0-1.5-.67-1.5-1.5v-15z"
@@ -55,15 +58,17 @@
         </defs>
       </svg>
     </span>
-    <span class="brand-text">
-      <span class="brand-jp">JP</span><em class="brand-notes">Notes</em>
+    <span class="toolbar__brand-text">
+      <span class="toolbar__brand-jp">JP</span><em class="toolbar__brand-notes"
+        >Notes</em
+      >
     </span>
   </div>
 
   <ToolbarSearch bind:this={searchRef} />
 
-  <div class="toolbar-actions">
-    <button class="toolbar-btn primary" onclick={onNewNote}>
+  <div class="toolbar__actions">
+    <button class="toolbar-btn toolbar-btn--primary" onclick={onNewNote}>
       <svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true">
         <path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
       </svg>
@@ -122,7 +127,7 @@
     pointer-events: none;
   }
 
-  .brand {
+  .toolbar__brand {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -130,7 +135,7 @@
     user-select: none;
   }
 
-  .brand-mark {
+  .toolbar__brand-mark {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -146,19 +151,19 @@
       0 4px 14px -6px rgba(228, 178, 89, 0.35);
   }
 
-  .brand-text {
+  .toolbar__brand-text {
     display: inline-flex;
     align-items: baseline;
     font-size: 16px;
     letter-spacing: -0.025em;
   }
 
-  .brand-jp {
+  .toolbar__brand-jp {
     font-weight: 700;
     color: var(--text);
   }
 
-  .brand-notes {
+  .toolbar__brand-notes {
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
     font-weight: 600;
@@ -169,13 +174,13 @@
     -webkit-text-fill-color: transparent;
   }
 
-  .toolbar-actions {
+  .toolbar__actions {
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  .mobile-back {
+  .toolbar__back {
     display: none;
     width: 34px;
     padding: 6px 0;
@@ -183,7 +188,7 @@
     font-size: 16px;
   }
 
-  .mobile-back.hidden {
+  .toolbar__back--hidden {
     visibility: hidden;
     pointer-events: none;
   }
@@ -194,10 +199,10 @@
       height: 50px;
       padding: 0 16px;
     }
-    .brand {
+    .toolbar__brand {
       margin-right: 8px;
     }
-    .brand-text {
+    .toolbar__brand-text {
       font-size: 15px;
     }
   }
@@ -207,12 +212,12 @@
       gap: 8px;
       padding: 0 12px;
     }
-    .brand {
+    .toolbar__brand {
       flex: 1;
       justify-content: center;
       margin-right: 0;
     }
-    .mobile-back {
+    .toolbar__back {
       display: flex;
     }
   }

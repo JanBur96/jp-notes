@@ -11,37 +11,42 @@
 </script>
 
 {#if store.aiLoading || store.aiSummary}
-  <div class="ai-result" class:is-loading={store.aiLoading}>
+  <div class={['ai-summary', store.aiLoading && 'ai-summary--loading']}>
     {#if store.aiLoading}
-      <div class="ai-loading">
-        <span class="ai-spinner"></span>
+      <div class="ai-summary__loading">
+        <span class="ai-summary__spinner"></span>
         <span>Generating summary…</span>
       </div>
     {:else}
       <button
-        class="ai-toggle"
+        class="ai-summary__toggle"
         onclick={() => (showSummary = !showSummary)}
         aria-expanded={showSummary}
       >
-        <span class="ai-toggle-label">
-          <span class="ai-toggle-dot"></span>
+        <span class="ai-summary__toggle-label">
+          <span class="ai-summary__toggle-dot"></span>
           AI Summary
         </span>
-        <span class="ai-chevron" class:open={showSummary}>
+        <span
+          class={[
+            'ai-summary__chevron',
+            showSummary && 'ai-summary__chevron--open',
+          ]}
+        >
           <svg viewBox="0 0 10 10" width="10" height="10" fill="none">
             <path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </span>
       </button>
       {#if showSummary}
-        <p class="ai-text">{store.aiSummary}</p>
+        <p class="ai-summary__text">{store.aiSummary}</p>
       {/if}
     {/if}
   </div>
 {/if}
 
 <style>
-  .ai-result {
+  .ai-summary {
     position: relative;
     flex-shrink: 0;
     border-top: 1px solid var(--border);
@@ -52,7 +57,7 @@
     animation: slideUp 0.24s var(--ease);
   }
 
-  .ai-result::before {
+  .ai-summary::before {
     content: '';
     position: absolute;
     top: 0;
@@ -72,7 +77,7 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .ai-loading {
+  .ai-summary__loading {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -83,7 +88,7 @@
     color: var(--text-2);
   }
 
-  .ai-spinner {
+  .ai-summary__spinner {
     flex-shrink: 0;
     width: 14px;
     height: 14px;
@@ -100,7 +105,7 @@
     }
   }
 
-  .ai-toggle {
+  .ai-summary__toggle {
     all: unset;
     box-sizing: border-box;
     display: flex;
@@ -117,17 +122,17 @@
     transition: color var(--dur) var(--ease);
   }
 
-  .ai-toggle:hover {
+  .ai-summary__toggle:hover {
     color: var(--accent);
   }
 
-  .ai-toggle-label {
+  .ai-summary__toggle-label {
     display: inline-flex;
     align-items: center;
     gap: 8px;
   }
 
-  .ai-toggle-dot {
+  .ai-summary__toggle-dot {
     width: 5px;
     height: 5px;
     border-radius: 50%;
@@ -135,7 +140,7 @@
     box-shadow: 0 0 8px rgba(228, 178, 89, 0.6);
   }
 
-  .ai-chevron {
+  .ai-summary__chevron {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -143,15 +148,15 @@
     transition: transform 0.22s var(--ease), color var(--dur) var(--ease);
   }
 
-  .ai-toggle:hover .ai-chevron {
+  .ai-summary__toggle:hover .ai-summary__chevron {
     color: var(--accent);
   }
 
-  .ai-chevron.open {
+  .ai-summary__chevron--open {
     transform: rotate(-180deg);
   }
 
-  .ai-text {
+  .ai-summary__text {
     padding: 0 24px 18px;
     font-family: 'Lora', Georgia, serif;
     font-size: 14px;

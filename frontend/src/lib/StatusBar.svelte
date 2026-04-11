@@ -39,19 +39,19 @@
 </script>
 
 <footer class="status-bar">
-  <div class="status-left">
-    <span class="status-dot"></span>
-    <span class="status-label">{activeFolderLabel}</span>
-    <span class="status-sep">·</span>
+  <div class="status-bar__left">
+    <span class="status-bar__dot"></span>
+    <span class="status-bar__label">{activeFolderLabel}</span>
+    <span class="status-bar__sep">·</span>
     <span>{noteCount} notes</span>
   </div>
-  <div class="status-right">
+  <div class="status-bar__right">
     {#if lastUpdated}
       <span>Updated {lastUpdated}</span>
-      <span class="status-sep">·</span>
+      <span class="status-bar__sep">·</span>
       <span>{wordCount} words</span>
     {:else}
-      <span class="status-muted">No note selected</span>
+      <span class="status-bar__muted">No note selected</span>
     {/if}
   </div>
 </footer>
@@ -78,14 +78,14 @@
     color: var(--text-3);
   }
 
-  .status-left,
-  .status-right {
+  .status-bar__left,
+  .status-bar__right {
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
-  .status-dot {
+  .status-bar__dot {
     width: 5px;
     height: 5px;
     border-radius: 50%;
@@ -93,7 +93,7 @@
     box-shadow: 0 0 8px rgba(125, 216, 160, 0.55);
   }
 
-  .status-label {
+  .status-bar__label {
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
     font-size: 11px;
@@ -103,11 +103,11 @@
     color: var(--text-2);
   }
 
-  .status-sep {
+  .status-bar__sep {
     color: var(--text-4);
   }
 
-  .status-muted {
+  .status-bar__muted {
     font-style: italic;
     text-transform: none;
     font-size: 11px;
@@ -120,7 +120,7 @@
       padding: 0 14px;
     }
 
-    .status-right {
+    .status-bar__right {
       display: none;
     }
   }

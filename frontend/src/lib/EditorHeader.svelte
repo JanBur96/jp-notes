@@ -38,17 +38,18 @@
 
 <div class="editor-header">
   <input
-    class="editor-title"
+    class="editor-header__title"
     type="text"
     placeholder="Untitled"
     value={title}
     oninput={(e) => onTitleChange((e.target as HTMLInputElement).value)}
   />
 
-  <div class="editor-subheader">
-    <div class="editor-meta">
-      <span class="meta-chip">
+  <div class="editor-header__sub">
+    <div class="editor-header__meta">
+      <span class="editor-header__chip">
         <svg
+          class="editor-header__chip-icon"
           viewBox="0 0 14 14"
           width="10"
           height="10"
@@ -63,9 +64,10 @@
         </svg>
         {note.folder?.name ?? 'All Notes'}
       </span>
-      <span class="meta-dot"></span>
-      <span class="meta-chip">
+      <span class="editor-header__dot"></span>
+      <span class="editor-header__chip">
         <svg
+          class="editor-header__chip-icon"
           viewBox="0 0 14 14"
           width="10"
           height="10"
@@ -90,7 +92,7 @@
       </span>
     </div>
 
-    <div class="editor-btns">
+    <div class="editor-header__actions">
       <button
         class="toolbar-btn"
         onclick={onSummarize}
@@ -113,7 +115,7 @@
         Summarize
       </button>
       <button
-        class="toolbar-btn {showPreview ? 'primary' : ''}"
+        class={['toolbar-btn', showPreview && 'toolbar-btn--primary']}
         onclick={onTogglePreview}
       >
         <svg
@@ -138,7 +140,10 @@
         </svg>
         Preview
       </button>
-      <button class="toolbar-btn" class:saved={savedRecently} onclick={onSave}>
+      <button
+        class={['toolbar-btn', savedRecently && 'toolbar-btn--saved']}
+        onclick={onSave}
+      >
         {#if savedRecently}
           <svg
             viewBox="0 0 14 14"
@@ -178,7 +183,7 @@
         <button class="toolbar-btn" onclick={onUnarchive}>Unarchive</button>
       {/if}
       <button
-        class="toolbar-btn {note.archived ? 'toolbar-btn--error' : ''}"
+        class={['toolbar-btn', note.archived && 'toolbar-btn--error']}
         onclick={onDelete}
       >
         {note.archived ? 'Delete Forever' : 'Delete'}
@@ -192,7 +197,7 @@
     flex-shrink: 0;
   }
 
-  .editor-title {
+  .editor-header__title {
     width: 100%;
     padding: 0;
     border: none;
@@ -206,12 +211,12 @@
     color: var(--text);
   }
 
-  .editor-title::placeholder {
+  .editor-header__title::placeholder {
     font-style: italic;
     color: var(--text-4);
   }
 
-  .editor-subheader {
+  .editor-header__sub {
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -222,7 +227,7 @@
     margin-top: 14px;
   }
 
-  .editor-subheader::before {
+  .editor-header__sub::before {
     content: '';
     position: absolute;
     left: 0;
@@ -237,7 +242,7 @@
     );
   }
 
-  .editor-meta {
+  .editor-header__meta {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -246,49 +251,43 @@
     color: var(--text-3);
   }
 
-  .meta-chip {
+  .editor-header__chip {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     letter-spacing: 0.02em;
   }
 
-  .meta-chip svg {
+  .editor-header__chip-icon {
     color: var(--text-3);
   }
 
-  .meta-dot {
+  .editor-header__dot {
     width: 3px;
     height: 3px;
     border-radius: 50%;
     background: var(--text-4);
   }
 
-  .editor-btns {
+  .editor-header__actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 7px;
   }
 
-  .editor-btns :global(.toolbar-btn.saved) {
-    border-color: rgba(120, 210, 150, 0.34);
-    background: rgba(120, 210, 150, 0.12);
-    color: #8bd0a3;
-  }
-
   @media (max-width: 860px) {
-    .editor-title {
+    .editor-header__title {
       font-size: 30px;
     }
   }
 
   @media (max-width: 600px) {
-    .editor-title {
+    .editor-header__title {
       font-size: 24px;
     }
 
-    .editor-subheader {
+    .editor-header__sub {
       gap: 10px;
       padding: 12px 0 14px;
       margin-top: 10px;

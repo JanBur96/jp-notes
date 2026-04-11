@@ -23,14 +23,14 @@
 
 {#if store.modal?.kind === 'confirm-delete-note'}
   <Modal title={isArchived ? 'Delete note' : 'Archive note'}>
-    <p class="modal-text">
+    <p class="confirm-delete__text">
       {#if isArchived}
         This note will be removed permanently. This action cannot be undone.
       {:else}
         This note will be moved to the archive. You can restore it later.
       {/if}
     </p>
-    <div class="modal-actions">
+    <div class="confirm-delete__actions">
       <button class="toolbar-btn" onclick={cancel}>Cancel</button>
       <button class="toolbar-btn toolbar-btn--error" onclick={confirm}>
         {isArchived ? 'Delete' : 'Archive'}
@@ -40,7 +40,7 @@
 {/if}
 
 <style>
-  .modal-text {
+  .confirm-delete__text {
     font-family: 'Lora', Georgia, serif;
     font-size: 14px;
     font-style: italic;
@@ -48,7 +48,7 @@
     color: var(--text-2);
   }
 
-  .modal-actions {
+  .confirm-delete__actions {
     display: flex;
     justify-content: flex-end;
     gap: 8px;

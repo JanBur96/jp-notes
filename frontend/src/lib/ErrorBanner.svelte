@@ -3,14 +3,14 @@
 </script>
 
 {#if store.hasError}
-  <div class="toolbar-error" role="alert">
-    <span class="error-icon" aria-hidden="true">
+  <div class="error-banner" role="alert">
+    <span class="error-banner__icon" aria-hidden="true">
       <svg viewBox="0 0 14 14" width="14" height="14" fill="none">
         <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/>
         <path d="M7 4v3.5M7 9.8v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
     </span>
-    <span class="error-message">{store.hasError}</span>
+    <span class="error-banner__message">{store.hasError}</span>
     <button
       class="toolbar-btn toolbar-btn--error"
       onclick={() => (store.hasError = '')}>Dismiss</button
@@ -19,7 +19,7 @@
 {/if}
 
 <style>
-  .toolbar-error {
+  .error-banner {
     position: relative;
     z-index: 2;
     display: flex;
@@ -44,13 +44,13 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .error-icon {
+  .error-banner__icon {
     flex-shrink: 0;
     display: inline-flex;
     color: var(--danger);
   }
 
-  .error-message {
+  .error-banner__message {
     flex: 1;
   }
 </style>

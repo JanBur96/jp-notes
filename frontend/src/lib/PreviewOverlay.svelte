@@ -30,15 +30,19 @@
   aria-label="Preview"
   onclick={handleBackdropClick}
 >
-  <div class="preview-overlay-header">
-    <span class="preview-overlay-title">{title || 'Untitled'}</span>
-    <button class="preview-close" onclick={onClose} aria-label="Close preview">
+  <div class="preview-overlay__header">
+    <span class="preview-overlay__title">{title || 'Untitled'}</span>
+    <button
+      class="preview-overlay__close"
+      onclick={onClose}
+      aria-label="Close preview"
+    >
       <svg viewBox="0 0 14 14" width="14" height="14" fill="none">
         <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
     </button>
   </div>
-  <div class="preview-overlay-body">
+  <div class="preview-overlay__body">
     <MarkdownView {html} onclick={onWikilinkClick} />
   </div>
 </div>
@@ -70,7 +74,7 @@
     }
   }
 
-  .preview-overlay-header {
+  .preview-overlay__header {
     position: sticky;
     top: 0;
     z-index: 1;
@@ -82,7 +86,7 @@
     background: linear-gradient(180deg, var(--bg) 80%, transparent);
   }
 
-  .preview-overlay-title {
+  .preview-overlay__title {
     overflow: hidden;
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
@@ -93,7 +97,7 @@
     color: var(--text-2);
   }
 
-  .preview-close {
+  .preview-overlay__close {
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -112,13 +116,13 @@
       border-color var(--dur) var(--ease);
   }
 
-  .preview-close:hover {
+  .preview-overlay__close:hover {
     background: rgba(30, 45, 72, 0.7);
     border-color: rgba(140, 180, 240, 0.24);
     color: var(--text);
   }
 
-  .preview-overlay-body {
+  .preview-overlay__body {
     width: 100%;
     max-width: 760px;
     padding: 40px 24px 60px;
@@ -134,7 +138,7 @@
   }
 
   @media (max-width: 600px) {
-    .preview-close {
+    .preview-overlay__close {
       width: 44px;
       height: 44px;
     }

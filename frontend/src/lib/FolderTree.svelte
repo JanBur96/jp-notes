@@ -72,10 +72,14 @@
     {#if hasChildren}
       <details>
         <summary
-          class:active={folder.id === activeFolderId}
-          class:drop-target={dragOverId === folder.id}
-          class:dragging={store.draggingItem?.kind === 'folder' &&
-            store.draggingItem.id === folder.id}
+          class={[
+            'nav-entry',
+            folder.id === activeFolderId && 'nav-entry--active',
+            dragOverId === folder.id && 'nav-entry--drop-target',
+            store.draggingItem?.kind === 'folder' &&
+              store.draggingItem.id === folder.id &&
+              'nav-entry--dragging',
+          ]}
           draggable="true"
           onclick={() => onSelect(folder.id)}
           ondragstart={(e) => handleDragStart(e, folder.id)}
@@ -97,10 +101,14 @@
       </details>
     {:else}
       <button
-        class:active={folder.id === activeFolderId}
-        class:drop-target={dragOverId === folder.id}
-        class:dragging={store.draggingItem?.kind === 'folder' &&
-          store.draggingItem.id === folder.id}
+        class={[
+          'nav-entry',
+          folder.id === activeFolderId && 'nav-entry--active',
+          dragOverId === folder.id && 'nav-entry--drop-target',
+          store.draggingItem?.kind === 'folder' &&
+            store.draggingItem.id === folder.id &&
+            'nav-entry--dragging',
+        ]}
         draggable="true"
         onclick={() => onSelect(folder.id)}
         ondragstart={(e) => handleDragStart(e, folder.id)}

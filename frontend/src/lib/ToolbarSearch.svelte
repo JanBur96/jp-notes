@@ -85,7 +85,7 @@
 
 <div class="toolbar-search">
   <svg
-    class="search-icon"
+    class="toolbar-search__icon"
     viewBox="0 0 16 16"
     width="13"
     height="13"
@@ -103,7 +103,7 @@
   <input
     bind:this={inputEl}
     type="text"
-    class="search-input"
+    class="toolbar-search__input"
     placeholder="Search notes…"
     bind:value={query}
     onfocus={() => {
@@ -111,21 +111,26 @@
     }}
     onkeydown={onKeydown}
   />
-  <kbd class="search-hint">⌃⌥K</kbd>
+  <kbd class="toolbar-search__hint">⌃⌥K</kbd>
   {#if open && results.length > 0}
-    <ul class="search-results">
+    <ul class="toolbar-search__results">
       {#each results as note, i (note.id)}
-        <li class:active={i === selectedIndex}>
+        <li
+          class={[
+            'toolbar-search__result-item',
+            i === selectedIndex && 'toolbar-search__result-item--active',
+          ]}
+        >
           <button
             type="button"
-            class="search-result-btn"
+            class="toolbar-search__result"
             onmouseenter={() => (selectedIndex = i)}
             onclick={() => selectResult(note)}
           >
-            <span class="search-result-title">
+            <span class="toolbar-search__result-title">
               {note.title || 'Untitled'}
             </span>
-            <span class="search-result-folder">
+            <span class="toolbar-search__result-folder">
               {note.folder?.name ?? 'All Notes'}
             </span>
           </button>
@@ -133,8 +138,8 @@
       {/each}
     </ul>
   {:else if open && query.trim() !== ''}
-    <ul class="search-results">
-      <li class="search-empty">No matches</li>
+    <ul class="toolbar-search__results">
+      <li class="toolbar-search__empty">No matches</li>
     </ul>
   {/if}
 </div>
@@ -147,7 +152,7 @@
     margin-right: auto;
   }
 
-  .search-icon {
+  .toolbar-search__icon {
     position: absolute;
     top: 50%;
     left: 14px;
@@ -157,7 +162,7 @@
     transition: color var(--dur) var(--ease);
   }
 
-  .search-input {
+  .toolbar-search__input {
     width: 100%;
     padding: 8px 62px 8px 36px;
     border: 1px solid var(--border-hi);
@@ -173,11 +178,11 @@
       box-shadow var(--dur) var(--ease);
   }
 
-  .search-input::placeholder {
+  .toolbar-search__input::placeholder {
     color: var(--text-3);
   }
 
-  .search-input:focus {
+  .toolbar-search__input:focus {
     border-color: rgba(228, 178, 89, 0.45);
     background: rgba(18, 28, 48, 0.75);
     box-shadow:
@@ -185,11 +190,11 @@
       0 4px 20px -4px rgba(228, 178, 89, 0.2);
   }
 
-  .toolbar-search:focus-within .search-icon {
+  .toolbar-search:focus-within .toolbar-search__icon {
     color: var(--accent);
   }
 
-  .search-hint {
+  .toolbar-search__hint {
     position: absolute;
     top: 50%;
     right: 12px;
@@ -206,11 +211,11 @@
     pointer-events: none;
   }
 
-  .toolbar-search:focus-within .search-hint {
+  .toolbar-search:focus-within .toolbar-search__hint {
     opacity: 0.4;
   }
 
-  .search-results {
+  .toolbar-search__results {
     position: absolute;
     top: calc(100% + 8px);
     left: 0;
@@ -247,7 +252,7 @@
     }
   }
 
-  .search-result-btn {
+  .toolbar-search__result {
     all: unset;
     box-sizing: border-box;
     display: flex;
@@ -260,7 +265,7 @@
     transition: background var(--dur) var(--ease);
   }
 
-  .search-results li.active .search-result-btn {
+  .toolbar-search__result-item--active .toolbar-search__result {
     background: linear-gradient(
       90deg,
       rgba(228, 178, 89, 0.18),
@@ -269,7 +274,7 @@
     box-shadow: inset 0 1px 0 rgba(255, 220, 150, 0.08);
   }
 
-  .search-result-title {
+  .toolbar-search__result-title {
     overflow: hidden;
     font-size: 13px;
     font-weight: 600;
@@ -279,18 +284,18 @@
     color: var(--text);
   }
 
-  .search-result-folder {
+  .toolbar-search__result-folder {
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
     font-size: 11px;
     color: var(--text-3);
   }
 
-  .search-results li.active .search-result-folder {
+  .toolbar-search__result-item--active .toolbar-search__result-folder {
     color: var(--accent);
   }
 
-  .search-empty {
+  .toolbar-search__empty {
     padding: 14px 14px;
     font-family: 'Lora', Georgia, serif;
     font-style: italic;

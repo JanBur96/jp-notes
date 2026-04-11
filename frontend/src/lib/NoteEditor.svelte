@@ -142,9 +142,9 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<main class="pane-editor">
+<main class="note-editor">
   {#if activeNote}
-    <div class="editor-inner">
+    <div class="note-editor__inner">
       <EditorHeader
         note={activeNote}
         {title}
@@ -158,22 +158,22 @@
         onUnarchive={handleUnarchive}
       />
 
-      <div class="editor-panels">
+      <div class="note-editor__panels">
         <CodeMirrorEditor
           noteId={activeNote?.id ?? null}
           initialContent={activeNote?.content ?? ''}
           onChange={(v) => (content = v)}
         />
         {#if showPreview}
-          <div class="preview-pane">
+          <div class="note-editor__preview">
             <MarkdownView html={previewHtml} onclick={handleWikilinkClick} />
           </div>
         {/if}
       </div>
     </div>
   {:else}
-    <div class="editor-empty">
-      <div class="empty-ornament" aria-hidden="true">
+    <div class="note-editor__empty">
+      <div class="note-editor__empty-ornament" aria-hidden="true">
         <svg viewBox="0 0 80 80" fill="none">
           <circle
             cx="40"
@@ -204,11 +204,13 @@
           </defs>
         </svg>
       </div>
-      <h2 class="empty-heading">No note selected</h2>
-      <p class="empty-sub">Select a note or create a new one.</p>
-      <div class="empty-hint">
-        <kbd>Ctrl</kbd><span>+</span><kbd>Alt</kbd><span>+</span><kbd>N</kbd>
-        <span class="empty-hint-label">for a new note</span>
+      <h2 class="note-editor__empty-title">No note selected</h2>
+      <p class="note-editor__empty-sub">Select a note or create a new one.</p>
+      <div class="note-editor__empty-hint">
+        <kbd class="note-editor__empty-key">Ctrl</kbd><span>+</span><kbd
+          class="note-editor__empty-key">Alt</kbd
+        ><span>+</span><kbd class="note-editor__empty-key">N</kbd>
+        <span class="note-editor__empty-hint-label">for a new note</span>
       </div>
     </div>
   {/if}
@@ -226,7 +228,7 @@
 {/if}
 
 <style>
-  .pane-editor {
+  .note-editor {
     position: relative;
     z-index: 1;
     display: flex;
@@ -236,7 +238,7 @@
     overflow: hidden;
   }
 
-  .editor-inner {
+  .note-editor__inner {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -245,7 +247,7 @@
     padding: 44px 48px 0;
   }
 
-  .editor-panels {
+  .note-editor__panels {
     display: flex;
     flex: 1;
     gap: 20px;
@@ -253,7 +255,7 @@
     padding-top: 20px;
   }
 
-  .editor-empty {
+  .note-editor__empty {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -264,7 +266,7 @@
     text-align: center;
   }
 
-  .empty-ornament {
+  .note-editor__empty-ornament {
     position: relative;
     width: 96px;
     height: 96px;
@@ -274,7 +276,7 @@
     animation: breathe 6s ease-in-out infinite;
   }
 
-  .empty-ornament::before {
+  .note-editor__empty-ornament::before {
     content: '';
     position: absolute;
     inset: -20px;
@@ -286,7 +288,7 @@
     filter: blur(8px);
   }
 
-  .empty-ornament svg {
+  .note-editor__empty-ornament svg {
     position: relative;
     width: 100%;
     height: 100%;
@@ -304,7 +306,7 @@
     }
   }
 
-  .empty-heading {
+  .note-editor__empty-title {
     margin-top: 6px;
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
@@ -314,14 +316,14 @@
     color: var(--text);
   }
 
-  .empty-sub {
+  .note-editor__empty-sub {
     max-width: 320px;
     font-size: 13px;
     line-height: 1.65;
     color: var(--text-2);
   }
 
-  .empty-hint {
+  .note-editor__empty-hint {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -330,7 +332,7 @@
     color: var(--text-3);
   }
 
-  .empty-hint kbd {
+  .note-editor__empty-key {
     display: inline-flex;
     align-items: center;
     min-width: 22px;
@@ -349,7 +351,7 @@
     color: var(--text-2);
   }
 
-  .empty-hint-label {
+  .note-editor__empty-hint-label {
     margin-left: 8px;
     font-family: 'Lora', Georgia, serif;
     font-style: italic;
@@ -357,7 +359,7 @@
     color: var(--text-3);
   }
 
-  .preview-pane {
+  .note-editor__preview {
     flex: 1;
     min-width: 0;
     overflow-y: auto;
@@ -378,21 +380,21 @@
   }
 
   @media (max-width: 860px) {
-    .editor-inner {
+    .note-editor__inner {
       padding: 28px 32px 0;
     }
 
-    .preview-pane {
+    .note-editor__preview {
       display: none;
     }
   }
 
   @media (max-width: 600px) {
-    .editor-inner {
+    .note-editor__inner {
       padding: 18px 18px 0;
     }
 
-    .empty-heading {
+    .note-editor__empty-title {
       font-size: 22px;
     }
   }
