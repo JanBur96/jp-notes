@@ -15,11 +15,19 @@
   import ErrorBanner from './lib/ErrorBanner.svelte';
   import CreateFolderModal from './lib/CreateFolderModal.svelte';
   import ConfirmDeleteNoteModal from './lib/ConfirmDeleteNoteModal.svelte';
+  import HelpModal from './lib/HelpModal.svelte';
 
   loadNotes();
   loadFolders();
 
   let toolbarRef: Toolbar;
+
+  const mobileQuery =
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 600px)')
+      : null;
+  let isMobile = $state(mobileQuery?.matches ?? false);
+  mobileQuery?.addEventListener('change', (e) => (isMobile = e.matches));
 
   function newNote() {
     createNote(store.activeFolderId ?? undefined);
@@ -47,6 +55,15 @@
     } else if (e.key === 'Escape' && store.modal) {
       e.preventDefault();
       store.modal = null;
+    } else if (matchHotkey(e, { code: 'Digit1', ctrl: true, alt: true })) {
+      e.preventDefault();
+      store.showFolderTree = !store.showFolderTree;
+    } else if (matchHotkey(e, { code: 'Digit2', ctrl: true, alt: true })) {
+      e.preventDefault();
+      store.showNoteList = !store.showNoteList;
+    } else if (matchHotkey(e, { code: 'Slash', ctrl: true, alt: true })) {
+      e.preventDefault();
+      store.modal = store.modal?.kind === 'help' ? null : { kind: 'help' };
     }
   }
 </script>
@@ -58,6 +75,7 @@
 
   <CreateFolderModal />
   <ConfirmDeleteNoteModal />
+  <HelpModal />
 
   <Toolbar
     bind:this={toolbarRef}
@@ -69,8 +87,12 @@
   <ErrorBanner />
 
   <div class={['app__body', `app__body--pane-${store.mobilePane}`]}>
-    <Sidebar />
-    <NoteList />
+    {#if isMobile || store.showFolderTree}
+      <Sidebar />
+    {/if}
+    {#if isMobile || store.showNoteList}
+      <NoteList />
+    {/if}
     <NoteEditor />
   </div>
 

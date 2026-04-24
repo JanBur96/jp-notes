@@ -32,7 +32,7 @@ router.post(
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "llama3.1:8b",
+            model: "gemma3:4b",
             prompt: `Summarize the following note concisely. Output only the summary (not too small) without any preamble or commentary:\n\n${note.content}`,
             stream: false,
           }),

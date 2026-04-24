@@ -14,7 +14,7 @@ services:
       # Uncomment and point at an Ollama instance if you want the AI
       # summarise button to work. Leaving it unset disables the feature
       # gracefully (the UI shows "AI unreachable").
-      # OLLAMA_URL: "http://host.docker.internal:11434"
+      OLLAMA_URL: "http://192.168.2.50:11434"
       DATABASE_URL: "file:/data/jp-notes.db"
 
 volumes:

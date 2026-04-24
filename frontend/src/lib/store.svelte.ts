@@ -5,7 +5,8 @@ import { isDescendant } from './folderUtils';
 type ModalState =
   | null
   | { kind: 'create-folder'; name: string }
-  | { kind: 'confirm-delete-note' };
+  | { kind: 'confirm-delete-note' }
+  | { kind: 'help' };
 
 type DraggingItem =
   | null
@@ -13,6 +14,9 @@ type DraggingItem =
   | { kind: 'folder'; id: string };
 
 export const store = $state({
+  showFolderTree: true,
+  showNoteList: true,
+
   notes: [] as Note[],
   folders: [] as Folder[],
   archivedNotes: [] as Note[],
