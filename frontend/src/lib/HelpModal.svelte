@@ -8,7 +8,7 @@
     { keys: ['Ctrl', 'Alt', 'K'], label: 'Focus search' },
     { keys: ['Ctrl', 'Alt', '1'], label: 'Toggle folder tree' },
     { keys: ['Ctrl', 'Alt', '2'], label: 'Toggle note list' },
-    { keys: ['Shift', 'Alt', '?'], label: 'Open this help' },
+    { keys: ['Ctrl', 'Alt', '/'], label: 'Open this help' },
     { keys: ['Esc'], label: 'Close modal' },
   ];
 </script>

@@ -192,7 +192,7 @@
     <button
       class="toolbar__help"
       aria-label="Keyboard shortcuts"
-      title="Keyboard shortcuts (Shift+Alt+?)"
+      title="Keyboard shortcuts (Ctrl+Alt+/)"
       onclick={() => (store.modal = { kind: 'help' })}
     >
       <svg
