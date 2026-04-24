@@ -16,6 +16,7 @@
   import CreateFolderModal from './lib/CreateFolderModal.svelte';
   import ConfirmDeleteNoteModal from './lib/ConfirmDeleteNoteModal.svelte';
   import HelpModal from './lib/HelpModal.svelte';
+  import PwaUpdateToast from './lib/PwaUpdateToast.svelte';
 
   loadNotes();
   loadFolders();
@@ -28,6 +29,21 @@
       : null;
   let isMobile = $state(mobileQuery?.matches ?? false);
   mobileQuery?.addEventListener('change', (e) => (isMobile = e.matches));
+
+  $effect(() => {
+    const note =
+      store.notes.find((n) => n.id === store.activeNoteId) ??
+      store.archivedNotes.find((n) => n.id === store.activeNoteId) ??
+      null;
+    if (!note) {
+      document.title = 'JPNotes';
+      return;
+    }
+    const noteTitle = note.title.trim() || 'Untitled';
+    document.title = note.folder
+      ? `${note.folder.name} / ${noteTitle} — JPNotes`
+      : `${noteTitle} — JPNotes`;
+  });
 
   function newNote() {
     createNote(store.activeFolderId ?? undefined);
@@ -97,6 +113,8 @@
   </div>
 
   <StatusBar />
+
+  <PwaUpdateToast />
 </div>
 
 <style>

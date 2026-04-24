@@ -3,15 +3,55 @@
   import { store } from './store.svelte';
 
   const { title, children }: { title: string; children: Snippet } = $props();
+
+  const FOCUSABLE =
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+  let contentEl: HTMLDivElement | null = $state(null);
+
+  $effect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    queueMicrotask(() => {
+      const first = contentEl?.querySelector<HTMLElement>(FOCUSABLE);
+      first?.focus();
+    });
+    return () => {
+      previouslyFocused?.focus?.();
+    };
+  });
+
+  function trapFocus(e: KeyboardEvent) {
+    if (e.key !== 'Tab' || !contentEl) return;
+    const focusables = [...contentEl.querySelectorAll<HTMLElement>(FOCUSABLE)];
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <div class="modal" onclick={() => (store.modal = null)}>
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-  <div class="modal__content" onclick={(e) => e.stopPropagation()}>
+  <div
+    bind:this={contentEl}
+    class="modal__content"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+    tabindex="-1"
+    onclick={(e) => e.stopPropagation()}
+    onkeydown={trapFocus}
+  >
     <div class="modal__glow" aria-hidden="true"></div>
     <div class="modal__header">
-      <h2 class="modal__title">{title}</h2>
+      <h2 id="modal-title" class="modal__title">{title}</h2>
       <button
         class="modal__close"
         aria-label="Close"

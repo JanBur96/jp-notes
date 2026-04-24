@@ -25,6 +25,16 @@
     extensions: [wikilinkExtension],
   });
 
+  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+    if (node.tagName === 'A') {
+      const href = node.getAttribute('href');
+      if (href && /^https?:/i.test(href)) {
+        node.setAttribute('target', '_blank');
+        node.setAttribute('rel', 'noopener noreferrer');
+      }
+    }
+  });
+
   import CodeMirrorEditor from './CodeMirrorEditor.svelte';
   import EditorHeader from './EditorHeader.svelte';
   import MarkdownView from './MarkdownView.svelte';
