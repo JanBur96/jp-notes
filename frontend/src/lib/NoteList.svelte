@@ -63,6 +63,18 @@
     <span class="note-list__header-count">{displayedNotes.length}</span>
   </div>
 
+  {#if store.archiveMode && displayedNotes.length > 0}
+    <div class="note-list__actions">
+      <button
+        type="button"
+        class="toolbar-btn toolbar-btn--error"
+        onclick={() => (store.modal = { kind: 'confirm-delete-all-archived' })}
+      >
+        Delete all
+      </button>
+    </div>
+  {/if}
+
   {#if displayedNotes.length === 0}
     <div class="note-list__empty">
       <span class="note-list__empty-line"></span>
@@ -169,6 +181,12 @@
     font-weight: 600;
     color: var(--text-3);
     background: rgba(20, 30, 50, 0.5);
+  }
+
+  .note-list__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 14px 8px;
   }
 
   .note-list__empty {

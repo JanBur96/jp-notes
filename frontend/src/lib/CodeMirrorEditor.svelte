@@ -1,8 +1,10 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { EditorView, basicSetup } from 'codemirror';
+  import { keymap } from '@codemirror/view';
   import { markdown } from '@codemirror/lang-markdown';
-  import { EditorState } from '@codemirror/state';
+  import { EditorState, Prec } from '@codemirror/state';
+  import { markdownShortcuts } from './markdownShortcuts';
 
   interface Props {
     noteId: string | null;
@@ -31,7 +33,13 @@
       parent: container,
       state: EditorState.create({
         doc,
-        extensions: [basicSetup, markdown(), listener, EditorView.lineWrapping],
+        extensions: [
+          Prec.high(keymap.of(markdownShortcuts)),
+          basicSetup,
+          markdown(),
+          listener,
+          EditorView.lineWrapping,
+        ],
       }),
     });
     view = v;

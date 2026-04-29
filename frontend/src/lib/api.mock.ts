@@ -262,6 +262,12 @@ export const mockApi = {
       state.notes = state.notes.filter((n) => n.id !== id);
       save(state);
     },
+
+    deleteAllArchived: async () => {
+      const state = load();
+      state.notes = state.notes.filter((n) => !(n.archived ?? false));
+      save(state);
+    },
   },
 
   ai: {

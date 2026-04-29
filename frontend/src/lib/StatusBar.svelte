@@ -11,7 +11,7 @@
     store.archiveMode
       ? 'Archive'
       : (store.folders.find((f) => f.id === store.activeFolderId)?.name ??
-        'All Notes')
+          'All Notes')
   );
 
   const noteCount = $derived(
@@ -118,6 +118,7 @@
     .status-bar {
       gap: 10px;
       padding: 0 14px;
+      height: 3rem;
     }
 
     .status-bar__right {

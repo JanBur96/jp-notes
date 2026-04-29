@@ -393,7 +393,7 @@
   }
 
   .toolbar__back--hidden {
-    visibility: hidden;
+    display: none !important;
     pointer-events: none;
   }
 
@@ -418,13 +418,16 @@
     }
     .toolbar__brand {
       flex: 1;
-      justify-content: center;
       margin-right: 0;
     }
     .toolbar__back {
       display: flex;
     }
     .toolbar__panel-toggles {
+      display: none;
+    }
+
+    .toolbar__help {
       display: none;
     }
   }

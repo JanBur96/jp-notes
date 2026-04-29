@@ -15,6 +15,7 @@
   import ErrorBanner from './lib/ErrorBanner.svelte';
   import CreateFolderModal from './lib/CreateFolderModal.svelte';
   import ConfirmDeleteNoteModal from './lib/ConfirmDeleteNoteModal.svelte';
+  import ConfirmDeleteAllArchivedModal from './lib/ConfirmDeleteAllArchivedModal.svelte';
   import HelpModal from './lib/HelpModal.svelte';
   import PwaUpdateToast from './lib/PwaUpdateToast.svelte';
 
@@ -91,6 +92,7 @@
 
   <CreateFolderModal />
   <ConfirmDeleteNoteModal />
+  <ConfirmDeleteAllArchivedModal />
   <HelpModal />
 
   <Toolbar

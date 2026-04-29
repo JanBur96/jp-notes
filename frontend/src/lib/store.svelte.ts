@@ -6,6 +6,7 @@ type ModalState =
   | null
   | { kind: 'create-folder'; name: string }
   | { kind: 'confirm-delete-note' }
+  | { kind: 'confirm-delete-all-archived' }
   | { kind: 'help' };
 
 type DraggingItem =
@@ -156,6 +157,23 @@ export async function deleteNote(id: string) {
     }
   } else {
     await archiveNote(id);
+  }
+}
+
+export async function deleteAllArchivedNotes() {
+  const prev = [...store.archivedNotes];
+  if (prev.length === 0) return;
+  const activeWasArchived = prev.some((n) => n.id === store.activeNoteId);
+
+  store.archivedNotes = [];
+  if (activeWasArchived) store.activeNoteId = null;
+
+  try {
+    await api.notes.deleteAllArchived();
+  } catch (error) {
+    console.error('Failed to delete archived notes:', error);
+    store.archivedNotes = prev;
+    store.hasError = 'Failed to delete archived notes';
   }
 }
 

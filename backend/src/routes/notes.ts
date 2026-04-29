@@ -103,6 +103,20 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.delete("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (req.query.archived !== "true") {
+      return res
+        .status(400)
+        .json({ error: "archived=true query parameter required" });
+    }
+    await prisma.note.deleteMany({ where: { archived: true } });
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.delete(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {

@@ -79,6 +79,8 @@ const realApi = {
         body: JSON.stringify(data),
       }),
     delete: (id: string) => request<void>(`/notes/${id}`, { method: 'DELETE' }),
+    deleteAllArchived: () =>
+      request<void>('/notes?archived=true', { method: 'DELETE' }),
   },
   folders: {
     list: () => request<Folder[]>('/folders'),

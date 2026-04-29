@@ -10,6 +10,11 @@
     { keys: ['Ctrl', 'Alt', '2'], label: 'Toggle note list' },
     { keys: ['Ctrl', 'Alt', '/'], label: 'Open this help' },
     { keys: ['Esc'], label: 'Close modal' },
+    { keys: ['Ctrl', 'B'], label: 'Bold (in editor)' },
+    { keys: ['Ctrl', 'I'], label: 'Italic (in editor)' },
+    { keys: ['Ctrl', 'E'], label: 'Inline code (in editor)' },
+    { keys: ['Ctrl', 'K'], label: 'Insert link (in editor)' },
+    { keys: ['Ctrl', 'Shift', '8'], label: 'Bulleted list (in editor)' },
   ];
 </script>
 
